@@ -1,4 +1,5 @@
 # SCRNA_repo
+The Packages I installed with the libraries are listed here: 
 ```R
 # PACKAGES: 
 
@@ -32,7 +33,7 @@ library("AnnotationHub")
 library("ensembldb")
 library("GenomicFeatures")
 library("MatrixGenerics")
-
+```
 
 # Quality control set-up and quality control
 
@@ -41,7 +42,7 @@ filepath_homecomp = "/Users/HP/Downloads/filtered/SRR12603780"
 filepath_vpn =   "/Users/andrew/Downloads/filtered/SRR12603780"
 
 
-
+```R
 # FOR SINGLE SAMPLE 
 
 # Read in 10X data for a single sample 
