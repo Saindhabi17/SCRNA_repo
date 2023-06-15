@@ -1197,3 +1197,41 @@ dev.off()
 
 
 ```
+
+
+##### Issues: 
+My first problem is to get run the seurat_integrated object that was merged with sampleData. The codes I have used for meging are-
+```R
+tmp_df<- seurat_integrated@meta.data
+
+merged_df <- merge(tmp_df, sampleData, 
+                   by.x = "orig.ident", 
+                   by.y = "sample_id", 
+                   all.x = TRUE)
+
+seurat_integrated@meta.data<-merged_df
+```
+
+After that I have saved the new object file.
+```R
+# saving objects (to mark where and when we stored the file)
+
+saveRDS(seurat_integrated, "seurat_integrated.RDS")
+```
+
+My problem started with marker identification, the code I used is-
+```R
+# Explecity set the defult object to normalized values
+DefaultAssay(seurat_integrated) <- "RNA"
+
+cluster0_conserved_markers <- FindConservedMarkers(seurat_integrated,
+                                                   ident.1 = 0,
+                                                   grouping.var= "Invasiveness",
+                                                   only.pos = TRUE,
+                                                   logfc.threshold = 0.60)
+```
+And the error I got- 
+```R
+Error in cells[[i]] <- rownames(x = object.var[object.var[, 1] == levels.split[i],  : 
+  attempt to select less than one element in integerOneIndex
+  ```
