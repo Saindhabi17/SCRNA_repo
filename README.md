@@ -36,54 +36,14 @@ library("MatrixGenerics")
 ```
 
 # Quality control set-up and quality control
-
+Before starting with vigorous code chunks, I have created directories - 
+1. for my own computer
+2. for the workstation
+They are listed below.
+```R
 # Directory
 filepath_homecomp = "/Users/HP/Downloads/filtered/SRR12603780"
-filepath_vpn =   "/Users/andrew/Downloads/filtered/SRR12603780"
-
-
-```R
-# FOR SINGLE SAMPLE 
-
-# Read in 10X data for a single sample 
-ctrl_counts <- Read10X(data.dir<-"/Users/andrew/Downloads/filtered/SRR12603780",
-                       strip.suffix = TRUE
-                       )
-
-ctrl_counts@i   #matrix.mtx?
-ctrl_counts@p   #barcodes.tsv
-ctrl_counts@Dim
-ctrl_counts@Dimnames
-ctrl_counts@x   #num matrix.mtx
-ctrl_counts@factors
-
-# Creating Seurat Object    
-ctrl <- CreateSeuratObject(counts = ctrl_counts, 
-                           project = "Seurat project"
-                           )
-head(ctrl@meta.data) 
-
-# To view the whole metadata
-View(ctrl@meta.data)
-
-# Novelty Score
-ctrl$log10GenesPerUMI <- log10(ctrl$nFeature_RNA) / log10(ctrl$nCount_RNA)
-
-# Mitochondrial Ratio
-ctrl$mitoRatio <- PercentageFeatureSet(object = ctrl, pattern = "^MT-")
-ctrl$mitoRatio <- ctrl@meta.data$mitoRatio / 100 
-
-metadata <- ctrl@meta.data
-metadata$cells <- rownames(metadata)
-metadata
-
-# changing the column names
-metadata <- dplyr::rename(metadata, seq_folder = orig.ident,
-                nUMI = nCount_RNA,
-                nGene = nFeature_RNA)
-
-
-
+filepath_workstation =   "/Users/andrew/Downloads/filtered/SRR12603780"
 
 # FOR MULTIPLE SAMPLES 
 
