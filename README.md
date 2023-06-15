@@ -1199,7 +1199,7 @@ dev.off()
 ```
 
 
-##### Issues: 
+## Issues: 
 My first problem is to get run the seurat_integrated object that was merged with sampleData. The codes I have used for meging are-
 ```R
 tmp_df<- seurat_integrated@meta.data
@@ -1235,3 +1235,76 @@ And the error I got-
 Error in cells[[i]] <- rownames(x = object.var[object.var[, 1] == levels.split[i],  : 
   attempt to select less than one element in integerOneIndex
   ```
+And then I have setup the AnnotationHub. That ran well, but I can't prepare the conserved markers. The codes for AnnotationHub (which was fine) are-
+```R
+# Adding more annotations to the result
+
+# Connect to AnnotationHub
+ah <- AnnotationHub()
+
+# Access the Ensembl database for organism
+ahDb <- query(ah, 
+              pattern = c("Homo sapiens", "EnsDb"), 
+              ignore.case = TRUE)
+
+# Acquire the latest annotation files
+id <- ahDb %>%
+  mcols() %>%
+  rownames() %>%
+  tail(n = 1)
+
+# Download the appropriate Ensembldb database
+edb <- ah[[id]]
+
+# Extract gene-level information from database
+annotations <- genes(edb, 
+                     return.type = "data.frame")
+
+# Select annotations of interest
+annotations <- annotations %>%
+  dplyr::select(gene_id, gene_name, seq_name, gene_biotype, description)
+
+# Create function to get conserved markers for any given cluster
+get_conserved <- function(cluster){
+  tryCatch({
+    FindConservedMarkers(seurat_integrated,
+                         ident.1 = cluster,
+                         grouping.var = "Invasiveness",
+                         only.pos = TRUE,
+                         logfc.threshold = 0.60) %>%
+      rownames_to_column(var = "gene") %>%
+      left_join(y = unique(annotations[, c("gene_name", "description")]),
+                by = c("gene" = "gene_name")) %>%
+      cbind(cluster_id = cluster, .)
+  },
+  error = function(e) {
+    message(paste0("Error: ", e$message))
+    return(NULL)
+  }
+  )
+}
+```
+After that the code got stuck and was showing error. 
+```R
+conserved_markers <- map_dfr(c(0:15), get_conserved)
+view(conserved_markers)
+```
+And the error is -
+```R
+Error: attempt to select less than one element in integerOneIndex
+Error: attempt to select less than one element in integerOneIndex
+Error: attempt to select less than one element in integerOneIndex
+Error: attempt to select less than one element in integerOneIndex
+Error: attempt to select less than one element in integerOneIndex
+Error: attempt to select less than one element in integerOneIndex
+Error: attempt to select less than one element in integerOneIndex
+Error: attempt to select less than one element in integerOneIndex
+Error: attempt to select less than one element in integerOneIndex
+Error: attempt to select less than one element in integerOneIndex
+Error: attempt to select less than one element in integerOneIndex
+Error: attempt to select less than one element in integerOneIndex
+Error: attempt to select less than one element in integerOneIndex
+Error: attempt to select less than one element in integerOneIndex
+Error: attempt to select less than one element in integerOneIndex
+Error: attempt to select less than one element in integerOneIndex
+```
