@@ -39,11 +39,14 @@ library("MatrixGenerics")
 Before starting with vigorous code chunks, I have created directories - 
 1. for my own computer
 2. for the workstation
+
 They are listed below.
+
 ```R
 # Directory
 filepath_homecomp = "/Users/HP/Downloads/filtered/SRR12603780"
 filepath_workstation =   "/Users/andrew/Downloads/filtered/SRR12603780"
+I have started working with the filtered files that were generated before using [Cell Ranger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger)  
 
 # FOR MULTIPLE SAMPLES 
 
