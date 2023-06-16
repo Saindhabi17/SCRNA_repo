@@ -170,6 +170,9 @@ merged_metadata %>%
 From the plots, it is clear that the cells have way more than 1000 UMI.
 
 ### Genes Detected per Cell
+In scRNA-seq, the number of genes detected per cell is a crucial quality metric that we expect to be similar to the UMI detection, albeit slightly lower. 
+
+For high-quality data, the proportional histogram of genes detected per cell should show a single peak that represents encapsulated cells. However, if there is a small shoulder or a bimodal distribution to the left of the main peak, this could indicate a few things. It could be due to some failed cells or biologically different cell types, such as quiescent cell populations or less complex cells of interest. For instance, larger cells or different cell types may have higher gene counts.
 ```R
 # Visualizing the distribution of genes detected per cell via histogram
 merged_metadata %>% 
@@ -182,7 +185,10 @@ merged_metadata %>%
   geom_vline(xintercept = 500) +
   labs(fill = "Sample")
 ```
+![Rplot_Genes_detected_per_cell](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/e105c732-3019-46b1-ac73-3d346e320600)
+
 ### Novelty Score
+The novelty score, computed as the ratio of nGenes over nUMI, measures the complexity of RNA species in each cell. A low number of genes detected in a cell with many captured transcripts (high nUMI) indicates low complexity or novelty. This could be due to an artifact, contamination, or represent a specific cell type (e.g. red blood cells). A good quality cell typically has a novelty score above 0.80.
 ```R
 # Visualizing the overall complexity of the gene expression by visualizing the genes detected per UMI (novelty score)
 merged_metadata %>%
@@ -195,8 +201,8 @@ merged_metadata %>%
 ```
 ![Rplot_Novelty_Score](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/530ae9fd-9365-4b59-9e9c-a2880f5ea124)
 
-
 ### Mitochondrial Gene Expression Detected per Cell 
+High level of expression from mitochondria indicate dying or dead cells. Basically poor quality samples are those that surpass 0.2 mitochondria ratio mark.
 ```R
 # Visualizing the distribution of mitochondrial gene expression detected per cell
 merged_metadata %>%
@@ -208,6 +214,9 @@ merged_metadata %>%
   facet_wrap(~seq_folder) +
   geom_vline(xintercept = 0.2)
 ```
+
+![Rplot_Mito_ratio](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/418c831a-8ff0-415a-8782-e4a6801de6ca)
+
 ### Joint Filtering: nUMI, nGene and mitoRatio
 ```R
 # Visualizing the correlation between genes detected and number of UMIs and determine whether strong presence of cells with low numbers of genes/UMIs
@@ -223,6 +232,15 @@ merged_metadata %>%
   geom_hline(yintercept = 500) +
   facet_wrap(~seq_folder)
 ```
+
+![Rplot_Joint_filtering](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/0a20bb56-78ce-490b-943b-e9325bc66875)
+
+There are samples that shows high-quality cells ; high nUMI, high nGene, low number of cells with high mitoRatio and also there are some samples that would clearely benfit from filtering, as they have low quality cells. We expect to see that dying cells to show high level of mitoRatio and low nUMI and nGene .
+
+Basically, it is not uncommon to observe cells with high numbers of UMIs and nGene with, but also high mitoRatio. These cells may be stressed or damaged, but they could also represent a heterogeneous population of cells with distinct metabolic states.
+
+To investigate the potential cause of high mitochondrial expression ratios, it is important to examine the expression of specific mitochondrial genes and compare them to other genes in the cell. If the expression of mitochondrial genes is elevated relative to other genes, this could suggest mitochondrial dysfunction. Additionally, examining the expression of other stress or damage markers, such as heat shock proteins or cell cycle genes, can also provide insight into the health and state of the cell.
+ 
 ## Filtering 
 #### The Cell-level Filtering
 -nUMI > 1000,
