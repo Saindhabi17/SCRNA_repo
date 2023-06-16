@@ -164,6 +164,9 @@ merged_metadata %>%
   geom_vline(xintercept = 1000) +
   labs(fill = "Sample")
 ```
+
+![Rplot_UMI_per_cell](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/c971038f-dc3f-4dc8-a0b7-a7635926fb25)
+
 From the plots, it is clear that the cells have way more than 1000 UMI.
 
 ### Genes Detected per Cell
