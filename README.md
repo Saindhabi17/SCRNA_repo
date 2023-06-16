@@ -200,7 +200,7 @@ merged_metadata %>%
   facet_wrap(~seq_folder) +
   geom_vline(xintercept = 0.2)
 ```
-# Joint Filtering: nUMI, nGene and mitoRatio
+### Joint Filtering: nUMI, nGene and mitoRatio
 ```R
 # Visualizing the correlation between genes detected and number of UMIs and determine whether strong presence of cells with low numbers of genes/UMIs
 merged_metadata %>% 
@@ -216,14 +216,12 @@ merged_metadata %>%
   facet_wrap(~seq_folder)
 ```
 ## Filtering 
-
-# Cell-level filtering
-
-# -nUMI > 1000
-# -nGene > 500 & < 6000
-# -log10GenesPerUMI > 0.8
-# -mitoRatio < 0.10
-
+#### The Cell-level Filtering
+-nUMI > 1000,
+-nGene > 500 & < 6000,
+-log10GenesPerUMI > 0.8,
+-mitoRatio < 0.10
+```R
 # filtering out low quality cells using selected thresholds - these will change with experiment
 filtered_seurat <- subset(merged_seurat, 
                           subset= nUMI >= 1000 &
@@ -234,11 +232,10 @@ filtered_seurat <- subset(merged_seurat,
 
 # exploring filtered seurat meta data
 View(filtered_seurat@meta.data)
-
-
-
-# Gene-level filtering - Keeping only genes which are expressed in 100 or more cells (usually this is 10)
-
+```
+#### The Gene-level Filtering 
+Keeping only genes which are expressed in 100 or more cells (usually this is 10)
+```R
 # Extracting counts
 counts <- GetAssayData(object = filtered_seurat, slot = "counts")
 
@@ -254,15 +251,14 @@ filtered_seurat <- CreateSeuratObject(filtered_counts, meta.data = filtered_seur
 
 # exploring filtered seurat metadata after gene-level filtering
 View(filtered_seurat@meta.data)
-
+```
+I have saved .RData object of filtered seurat file to load at any time
+```R
 # Creating .RData object to load at any time
 save(filtered_seurat, file="seurat_filtered.RData")
-
-
-
-# Re-assess QC Metrics
-
-
+```
+## Re-assess the QC Metrics
+```R
 # saving filtered subset to new metadata
 metadata_clean <- filtered_seurat@meta.data
 
@@ -279,8 +275,9 @@ names(met_after)[1] <- 'count'
 
 # count
 cell_count <- data.frame(rbind(met_before, met_after))
-
-# visualization :
+```
+### Visualization of the Re-assessment :
+```R
 cell_count %>% ggplot(aes(x=cell, y=count, fill=QCgroup)) + 
   geom_bar(stat="identity", position=position_dodge()) +
   theme_classic() +
@@ -289,11 +286,9 @@ cell_count %>% ggplot(aes(x=cell, y=count, fill=QCgroup)) +
   scale_fill_manual(values = c("#CC6666", "#9999CC")) +
   xlab("samples") +
   ggtitle("nCells count before and after QC")
-
-
-
-# Visualizing the correlation between genes detected and number of UMIs and determine whether strong presence of cells with low numbers of genes/UMIs
-
+```
+### Visualizing the correlation between genes detected and number of UMIs and determine whether strong presence of cells with low numbers of genes/UMIs
+```R
 metadata_clean %>% 
   ggplot(aes(x=nUMI, y=nGene, color=mitoRatio)) + 
   geom_point() + 
@@ -305,20 +300,18 @@ metadata_clean %>%
   geom_vline(xintercept = 1000) +
   geom_hline(yintercept = 500) +
   facet_wrap(~seq_folder)
+```
+# Normalization and Regressing Out Unwanted Variation
 
+## Exploring sources of unwanted variation
+Here, the goal is to evaluate the effects of cell cycle and mitochondrial expression - 
+### For Cell Cycle
+1. First scoring the cells for cell cycle genes
+2. Then determining whether cell cycle is a major source of variation in our data set using PCA.
 
+SCTransform functions can also be used for normalization that will replace other functions single handedly 
 
-
-# NORMALIZATION, REGRESSING OUT UNWANTED VARIATION, CLUSTERING
-
-# Exploring sources of unwanted variation
-
-# Evaluating effects of cell cycle and mitochondrial expression - 
-# First scoring the cells for cell cycle genes
-# Then determining whether cell cycle is a major source of variation in our data set using PCA.
-
-# SCTransform functions can also be used for normalization that will replace other functions single handedly 
-
+```R
 # Normalizing the counts
 # This normalization method is solely for the purpose of exploring the sources of variation in our data.
 seurat_phase <- NormalizeData(filtered_seurat, normalization.method = "LogNormalize", scale.factor = 10000)
@@ -334,11 +327,15 @@ seurat_phase <- CellCycleScoring(seurat_phase,
 # Viewing cell cycle scores and phases assigned to cells                                 
 View(seurat_phase@meta.data) 
 table(seurat_phase$Phase)
+```
+### Cells in different cell cycle phases - 
+1. G1 : 49590
+2. G2M : 11433
+3. S : 25096
 
-# G1 49590
-# G2M 11433
-# S 25096
+From this, it is clear most of the cells are in G1 and S, which makes sense.
 
+```R
 # Identifying the most variable genes and scaling them
 seurat_phase <- FindVariableFeatures(seurat_phase, 
                                      selection.method = "vst", 
@@ -353,14 +350,13 @@ top10 <- head(VariableFeatures(seurat_phase), 10)
 plot1 <- VariableFeaturePlot(seurat_phase)
 plot2 <- LabelPoints(plot = plot1, points = top10, repel = TRUE)
 dev.new()
-plot1 + plot2
 library(ggplot2)
 ggsave('plot1.png', plot1)
 ggsave('plot2.png', plot2)
 print(plot2)
 print(plot1)
-
-
+```
+```R
 # Checking quartile values for mitoRatio, we will use this variable later to mitigate unwanted source of variation in dataset
 summary(seurat_phase@meta.data$mitoRatio)
 
@@ -368,8 +364,6 @@ summary(seurat_phase@meta.data$mitoRatio)
 seurat_phase@meta.data$mitoFr <- cut(seurat_phase@meta.data$mitoRatio, 
                                      breaks=c(-Inf, 0.015, 0.025, 0.045, Inf), 
                                      labels=c("Low","Medium","Medium high", "High"))
-
-
 
 # Scaling the counts
 # This step is essential for PCA , clustering and heatmap generation
@@ -392,28 +386,25 @@ with_split <- DimPlot(seurat_phase,
 
 with_split
 
-#dev.new(width=25, height=5)
-
 no_split + with_split
-
-
-
+```
+### For Mitochondrial Expression- 
+```R
 # Plotting the PCA colored by mitochondrial expression
 no_split <- DimPlot(seurat_phase,
                     reduction = "pca",
                     group.by= "mitoFr")
-
 with_split <- DimPlot(seurat_phase,
                       reduction = "pca",
                       group.by= "mitoFr",
                       split.by= "mitoFr")
-
 no_split + with_split
+```
 
+Based on the above plots, we can see that cells are scattered regardless of their cell cycle phase and mitochondrial genes expression level. So there is no need to regress out the effect of cell cycle and mitochondrial expression in this dataset.
 
-
-# INTEGRATION
-
+# Integration
+```R
 # adjusting the limit for allowable object sizes within R
 options(future.globals.maxSize = 4000 * 1024^2)
 
