@@ -309,8 +309,6 @@ Here, the goal is to evaluate the effects of cell cycle and mitochondrial expres
 1. First scoring the cells for cell cycle genes
 2. Then determining whether cell cycle is a major source of variation in our data set using PCA.
 
-SCTransform functions can also be used for normalization that will replace other functions single handedly 
-
 ```R
 # Normalizing the counts
 # This normalization method is solely for the purpose of exploring the sources of variation in our data.
@@ -403,9 +401,21 @@ no_split + with_split
 
 Based on the above plots, we can see that cells are scattered regardless of their cell cycle phase and mitochondrial genes expression level. So there is no need to regress out the effect of cell cycle and mitochondrial expression in this dataset.
 
+# SCTransform 
+This function is useful for normalization and regressing out sources of unwanted variation at the same time.The method constructs a generalized linear model (GLM) for each gene, using UMI counts as the response variable and sequencing depth as the explanatory variable. To handle the fact that different genes have different levels of expression, information is pooled across genes with similar abundances, resulting in more accurate parameter estimates.
+
+This regularization process yields residuals, which represent effectively normalized data values that are no longer correlated with sequencing depth.
+
+This method is more accurate method of normalizing, estimating the variance of the raw filtered data, and identifying the most variable genes. In practice SCTransform single command replaces NormalizeData(), ScaleData(), and FindVariableFeatures(). Since we have two group of sample we will run SCTransform on each groups after doing "integration".
+
 # Integration
+
+To improve clustering and downstream analyses, it can be beneficial to integrate or align samples across groups using shared highly variable genes. If cells cluster by sample, condition, batch, dataset, or modalities(scRNA, scATAC-seq), integration can help to remove these unwanted sources of variation. 
+
+For example, if we want to integrate normal samples together and BLCA samples together, we should keep each sample as a separate object and transform them accordingly for integration. This is necessary to ensure that the samples are properly aligned and that downstream analyses are meaningful. If cell types are present in one dataset, but not the other, then the cells will still appear as a separate sample-specific cluster.
+
 ```R
-# adjusting the limit for allowable object sizes within R
+# Adjusting the limit for allowable object sizes within R
 options(future.globals.maxSize = 4000 * 1024^2)
 
 # Splitting seurat object by group
@@ -415,11 +425,13 @@ split_seurat <- SplitObject(seurat_phase, split.by = "sample")
 for (i in 1:length(split_seurat)) {
   split_seurat[[i]] <- SCTransform(split_seurat[[i]], vars.to.regress = c("mitoRatio", "S.Score", "G2M.Score"))
 }
-
+```
+Visualizing the object: 
+```R
 # to see what the component of the object are. 
-
 split_seurat  
-
+```
+```R
 #$Normal
 #An object of class Seurat
 #46094 features across 20167 samples within 2 assays
@@ -433,8 +445,8 @@ split_seurat
 #Active assay: SCT (23110 features, 3000 variable features)
 # 1 other assay present: RNA
 # 1 dimensional reduction calculated: pca
-
-
+```
+```R
 # Selecting the most variable features to use for integration
 integ_features <- SelectIntegrationFeatures(object.list = split_seurat, 
                                             nfeatures = 3000) 
@@ -451,10 +463,12 @@ integ_anchors <- FindIntegrationAnchors(object.list = split_seurat,
 # Integrating across conditions
 seurat_integrated <- IntegrateData(anchorset = integ_anchors, 
                                    normalization.method = "SCT")
-
+```
+```R
 # Checking assays in the object:
 split_seurat$Normal@assays
-
+```
+```R
 #$RNA
 #Assay data with 23110 features for 20167 cells
 #Top 10 variable features:
@@ -464,10 +478,18 @@ split_seurat$Normal@assays
 #SCTAssay data with 22984 features for 20167 cells, and 1 SCTModel(s) 
 #Top 10 variable features:
 #  TPSB2, S100A9, PLA2G2A, S100A8, TPSAB1, LYZ, CCL4, PTGDS, SPINK1, CFD 
+```
+## Check for Integration 
 
+After normalization and integration, we can proceed to PCA and UMAP/t-SNE to see effect of integration.
+
+```R
 # Running PCA
 seurat_integrated <- RunPCA(object = seurat_integrated, verbose = TRUE)
+```
+The Pc's are- 
 
+```R
 #PC_ 1 
 #Positive:  CD52, PTPRC, CCL5, CD3D, KRT19, RPS19, TRAC, HCST, RPS27, S100P 
 #           SRGN, SAMSN1, FXYD3, TRBC2, CD2, RGS1, CD7, CXCR4, RPS29, KRT13 
@@ -507,35 +529,40 @@ seurat_integrated <- RunPCA(object = seurat_integrated, verbose = TRUE)
 #Negative:  RGS5, ACTA2, NDUFA4L2, MYL9, PPP1R14A, TAGLN, FRZB, CRIP1, CALD1, MYH11 
 #           IGFBP7, GJA4, PRKG1, COL18A1, MCAM, TPPP3, MUSTN1, COX4I2, COL4A1, COL4A2 
 #           PTP4A3, MYLK, CDH6, MFGE8, SOD3, TYROBP, HEYL, HIGD1B, WFDC1, HLA-DRA 
+```
 
+### Plotting PCA 
 
+```R
 # Plotting PCA
 png(filename = "PCA_integrated.png", width = 16, height = 8.135, units = "in", res = 300)
 PCAPlot(seurat_integrated,
         split.by = "sample")
 dev.off() 
-
+```
+### Visualizing seurat_integrated:
+```R
 seurat_integrated
 #An object of class Seurat 
 #49220 features across 86119 samples within 3 assays 
 #Active assay: integrated (3000 features, 3000 variable features)
 #2 other assays present: RNA, SCT
 #1 dimensional reduction calculated: pca
-
-
-
+```
+### Plotting UMAP
+```R
 # Run UMAP
 seurat_integrated <- RunUMAP(seurat_integrated, 
                              dims = 1:40,
                              reduction = "pca",
                              verbose = TRUE)
-
+                             
 # Plot UMAP 
 png(filename = "UMAP_integrated.png", width = 16, height = 8.135, units = "in", res = 300)
 DimPlot(seurat_integrated, split.by = "sample")
 dev.off()
-
-
+```
+```R
 
 # CLUSTERING CELLS BASED ON TOP PCS (METAGENES)
 
