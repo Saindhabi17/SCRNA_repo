@@ -188,6 +188,9 @@ merged_metadata %>%
   xlab("Novelty Score") +
   geom_vline(xintercept = 0.8)
 ```
+![Rplot_Novelty_Score](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/530ae9fd-9365-4b59-9e9c-a2880f5ea124)
+
+
 ### Mitochondrial Gene Expression Detected per Cell 
 ```R
 # Visualizing the distribution of mitochondrial gene expression detected per cell
