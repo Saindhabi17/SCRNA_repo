@@ -562,13 +562,14 @@ png(filename = "UMAP_integrated.png", width = 16, height = 8.135, units = "in", 
 DimPlot(seurat_integrated, split.by = "sample")
 dev.off()
 ```
+
+# Clustering Cells Based on Top PCs (Metagenes)
+
+## Identify significant PCs
+
+For new method like SCTransform it is not needed to calculate the number of PCs for clustering. However older methods could not efficiently removed technical biases , so using them it was necessary to have some idea about the number of PCs that can capture most of information in the dataset.
+
 ```R
-
-# CLUSTERING CELLS BASED ON TOP PCS (METAGENES)
-
-
-# Identify significant PCs
-
 # Explore heatmap of PCs
 png(filename = "heatmap_integrated_2.png", width = 16, height = 8.135, units = "in", res = 300)
 DimHeatmap(seurat_integrated, 
@@ -576,12 +577,14 @@ DimHeatmap(seurat_integrated,
            cells = 500, 
            balanced = TRUE)
 dev.off()
-
+```
+```R
 # Printing out the most variable genes driving PCs
 print(x = seurat_integrated[["pca"]], 
       dims = 1:10, 
       nfeatures = 5)
-
+```
+```R
 # PC_ 1 
 # Positive:  CD52, PTPRC, CCL5, CD3D, KRT19 
 # Negative:  IGFBP7, MGP, SPARC, SPARCL1, VIM 
@@ -621,22 +624,22 @@ print(x = seurat_integrated[["pca"]],
 # PC_ 10 
 # Positive:  CRH, CCL5, LY6D, RPS19, ACKR1 
 # Negative:  HSPA1A, HSPA1B, DNAJB1, LCN15, HSP90AA1 
-
-
+```
+```R
 # To determine how many Pcs should be considered for clustering:
 # Plotting the elbow plot
 png(filename = "elbow.png", width = 16, height = 8.135, units = "in", res = 300)
 ElbowPlot(object = seurat_integrated, 
           ndims = 40)
 dev.off()
-
-
+```
+```R
 # to make it more quantitative :
 # Determining percent of variation associated with each PC
 pct <- seurat_integrated[["pca"]]@stdev / sum(seurat_integrated[["pca"]]@stdev) * 100
-
 pct
-
+```
+```R
 #[1] 7.9596270 6.4804792 5.5083025 4.4609188 4.0031754 3.5967530 3.3963246 3.0842674
 #[9] 2.8526141 2.6327352 2.4536622 2.4075917 2.2740071 2.2180154 2.0701053 2.0233150
 #[17] 1.9361711 1.7899755 1.7465302 1.6432391 1.6341522 1.5688985 1.5288258 1.4906526
@@ -644,7 +647,8 @@ pct
 #[33] 1.2001166 1.1807094 1.1542407 1.1514479 1.1161946 1.0873437 1.0653210 1.0633526
 #[41] 1.0481415 1.0289363 1.0172385 1.0054600 0.9848788 0.9677587 0.9398681 0.9329160
 #[49] 0.9243895 0.9090550
-
+```
+```R
 # Calculate cumulative percents for each PC
 cumu <- cumsum(pct)
 cumu
