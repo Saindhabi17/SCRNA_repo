@@ -35,7 +35,7 @@ library("GenomicFeatures")
 library("MatrixGenerics")
 ```
 
-# Quality control set-up and quality control
+# Loading Single Cell RNA Seq Count Data
 Before starting with vigorous code chunks, I have created directories - 
 1. for my own computer
 2. for the workstation
@@ -44,12 +44,14 @@ They are listed below.
 
 ```R
 # Directory
-filepath_homecomp = "/Users/HP/Downloads/filtered/SRR12603780"
-filepath_workstation =   "/Users/andrew/Downloads/filtered/SRR12603780"
-I have started working with the filtered files that were generated before using [Cell Ranger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger)  
+filepath_homecomp = "/Users/HP/Downloads/filtered"
+filepath_workstation = "/Users/andrew/Downloads/filtered"
+```
+I have started working with the filtered files that were prepared before using [Cell Ranger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger) from the FASTQ sequencing data generated from ScRNAseq. 
 
-# FOR MULTIPLE SAMPLES 
-
+## Loading Data and Creating a Merged Seurat Object
+Here, I have 11 sample files, on which I have executed my work. For this, I have first loaded the data files and then made a seurat object. 
+```R
 # creating list of samples
 samples <- list.files("/Users/andrew/Downloads/filtered/")
 
@@ -79,16 +81,21 @@ merged_seurat <- merge(x = SRR12603780,
                              SRR12603789,
                              SRR12603790),
                        add.cell.id = samples)
-
-
-
-
+```
 # Quality Control
-
-
+At first the meta data of the merged seurat object was explored.
+```R
 # exploring merged meta data
 View(merged_seurat@meta.data)
-
+```
+There are 3 columns in the merged meta data. They are- 
+1. orig.ident: The first column contains the sample identity as known. By default it shows the value provided for the project argument when loading in the data.
+2. nCount_RNA: This column represents the number of UMIs per cell. UMI (unique molecular identifiers) is used to determine whether a read is a biological or technical duplicate (PCR duplicate). There can be 2 types of duplicates - Biological Duplicates - Reads with different UMIs mapping to the same transcript derived from different molecules, and Technical Duplicates - Reads with the same UMI originated from the same molecule. For the biological duplicates each read should be counted where for the technical duplicates reads should be counted as a single one.
+3. nFeature_RNA: This column represents the number of genes detected per cell.
+## Recommended Features to Add to the Metadata 
+1. Novelty Score: It is the number of genes detected per UMI. More genes detected per UMI, more complex the data will be.
+2. Mitochondrial Ratio: This metric will give us a percentage of cell reads originating from the mitochondrial genes (coming from dying cells).
+```R
 # adding number of genes per UMI (Novelty score) for each cell to metadata
 merged_seurat$log10GenesPerUMI <- log10(merged_seurat$nFeature_RNA) / log10(merged_seurat$nCount_RNA)
 
@@ -121,18 +128,16 @@ merged_metadata <- merged_metadata %>%
 
 # adding merged metadata back to Seurat object
 merged_seurat@meta.data <- merged_metadata
-
-# creating .RData object to load at any time
+```
+After this, I have created .RData object that can be loaded at any time. 
+```R
 save(merged_seurat, file="/Users/andrew/Downloads/filtered/merged_filtered_seurat.RData")
-
-
-
-
-# VISUALIZING THE PLOTS
-
+```
+## Visualizing the Plots 
+In this part of QC, there will be various plots that can help to understand how this QC is going on. 
 
 # cell counts per sample
-
+```R
 # visualizing the number of cell counts per sample
 merged_metadata %>%
   ggplot(aes(x=seq_folder, fill=sample)) + 
@@ -141,7 +146,7 @@ merged_metadata %>%
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
   theme(plot.title = element_text(hjust=0.5, face="bold")) +
   ggtitle("NCells before QC")
-
+```
 
 
 # UMIs per sample
