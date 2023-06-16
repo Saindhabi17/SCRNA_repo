@@ -215,10 +215,7 @@ merged_metadata %>%
   geom_hline(yintercept = 500) +
   facet_wrap(~seq_folder)
 ```
-
-
-# FILTERING 
-
+## Filtering 
 
 # Cell-level filtering
 
