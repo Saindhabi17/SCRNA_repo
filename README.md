@@ -136,7 +136,7 @@ save(merged_seurat, file="/Users/andrew/Downloads/filtered/merged_filtered_seura
 ## Visualizing the Plots 
 In this part of QC, there will be various plots that can help to understand how this QC is going on. 
 
-# cell counts per sample
+### Cell Counts per Sample
 ```R
 # visualizing the number of cell counts per sample
 merged_metadata %>%
@@ -148,9 +148,9 @@ merged_metadata %>%
   ggtitle("NCells before QC")
 ```
 
-
-# UMIs per sample
-
+### UMIs per Sample
+Typically, we expect the UMI counts per cell to be higher than 500, which is the lower limit of the expected range. If the UMI counts range between 500-1000, the data is still usable, but deeper sequencing may have been beneficial for these cells.
+```R
 # Visualizing the number UMIs/transcripts per cell
 merged_metadata %>% 
   ggplot(aes(x=nUMI, fill= sample)) + 
@@ -161,11 +161,11 @@ merged_metadata %>%
   facet_wrap(~seq_folder) +
   geom_vline(xintercept = 1000) +
   labs(fill = "Sample")
+```
+From the plots, it is clear that the cells have way more than 1000 UMI.
 
-
-
-# Genes detected per cell
-
+### Genes Detected per Cell
+```R
 # Visualizing the distribution of genes detected per cell via histogram
 merged_metadata %>% 
   ggplot(aes(x=nGene, fill= sample)) + 
@@ -176,11 +176,9 @@ merged_metadata %>%
   facet_wrap(~seq_folder) +
   geom_vline(xintercept = 500) +
   labs(fill = "Sample")
-
-
-
-# Novelty score
-
+```
+### Novelty Score
+```R
 # Visualizing the overall complexity of the gene expression by visualizing the genes detected per UMI (novelty score)
 merged_metadata %>%
   ggplot(aes(x=log10GenesPerUMI, fill=sample)) +
@@ -189,11 +187,9 @@ merged_metadata %>%
   facet_wrap(~seq_folder) +
   xlab("Novelty Score") +
   geom_vline(xintercept = 0.8)
-
-
-
-# Mitochondrial gene expression detected per cell 
-
+```
+### Mitochondrial Gene Expression Detected per Cell 
+```R
 # Visualizing the distribution of mitochondrial gene expression detected per cell
 merged_metadata %>%
   ggplot(aes(x=mitoRatio, fill=sample)) + 
@@ -203,11 +199,9 @@ merged_metadata %>%
   theme_classic() +
   facet_wrap(~seq_folder) +
   geom_vline(xintercept = 0.2)
-
-
-
-# Joint filtering: nUMI, nGene and mitoRatio
-
+```
+# Joint Filtering: nUMI, nGene and mitoRatio
+```R
 # Visualizing the correlation between genes detected and number of UMIs and determine whether strong presence of cells with low numbers of genes/UMIs
 merged_metadata %>% 
   ggplot(aes(x=nUMI, y=nGene, color=mitoRatio)) + 
@@ -220,7 +214,7 @@ merged_metadata %>%
   geom_vline(xintercept = 1000) +
   geom_hline(yintercept = 500) +
   facet_wrap(~seq_folder)
-
+```
 
 
 # FILTERING 
