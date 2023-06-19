@@ -245,7 +245,7 @@ To investigate the potential cause of high mitochondrial expression ratios, it i
 #### The Cell-level Filtering
 -nUMI > 1000,
 -nGene > 500 & < 6000,
--log10GenesPerUMI > 0.8,
+-log10GenesPerUMI or Novelty Score > 0.8,
 -mitoRatio < 0.10
 ```R
 # filtering out low quality cells using selected thresholds - these will change with experiment
@@ -335,6 +335,13 @@ metadata_clean %>%
 ![Rplot_correlation_between_genes_detected_and_number_of_UMIs](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/0bab40d2-b95f-4581-9e90-fb13d6dc6453)
 
 # Normalization and Regressing Out Unwanted Variation
+The ultimate goal is to define clusters of cells and identify cell types in the samples. To achieve this, there are several steps. The 1st of them is normalization and regressing out the unwanted variation.
+
+The first step is identifying unwanted variability by exploring data and covariates such as cell cycle and mitochondrial gene expression. Both biological source of variation (e.g. effect of cell cycle on transcriptome) and technical source should be explored and account for. 
+
+Next we have to normalize and remove unwanted variability using Seurat's ```SCTransform``` function. The normalization step is necessary to make expression counts comparable across genes and/or samples. The counts of mapped reads for each gene is proportional to the expression of RNA (“interesting”) in addition to many other factors (“uninteresting” such as sequencing depth and gene length). 
+
+Normalization is the process of adjusting raw count values to account for the “uninteresting” factors. For simplicity , normalization is assumed as two step process: scaling and transforming. In scaling the goal is to multiply each UMI count by a cell specific factor to get all cells to have the same UMI counts.For transformation simple approaches like log-transformation showed to be not that useful, especially in the case of genes with high expression but showing decent performance for low/intreemediate expressed genes. So we cannot treat all genes the same. The proposed solution for data transformation is Pearson residuals (inmplemented in Seurat's ```SCTransform``` function), which applies a gene-specific weight to each measurement based on the evidence of non-uniform expression across cells. This weight is higher for genes expressed in a smaller fraction of cells, making it useful for detecting rare cell populations. The weight takes into account not just the expression level but also the distribution of expression.
 
 ## Exploring sources of unwanted variation
 Here, the goal is to evaluate the effects of cell cycle and mitochondrial expression - 
@@ -387,6 +394,9 @@ ggsave('plot2.png', plot2)
 print(plot2)
 print(plot1)
 ```
+![Plot_1](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/5c408bd0-5ae6-41f5-9fb0-07d9bcf661e4)
+![Plot_2](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/9a6adba7-f943-4161-a8b7-ed0505a00c3a)
+
 ```R
 # Checking quartile values for mitoRatio, we will use this variable later to mitigate unwanted source of variation in dataset
 summary(seurat_phase@meta.data$mitoRatio)
@@ -419,6 +429,8 @@ with_split
 
 no_split + with_split
 ```
+![Plot_PCA_Phase](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/01825690-d59d-43ea-aa30-2f9991a362f3)
+
 ### For Mitochondrial Expression- 
 ```R
 # Plotting the PCA colored by mitochondrial expression
@@ -431,6 +443,7 @@ with_split <- DimPlot(seurat_phase,
                       split.by= "mitoFr")
 no_split + with_split
 ```
+![Plot_PCA_Mito](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/9b81038f-536d-4489-aa8f-21158d43fddf)
 
 Based on the above plots, we can see that cells are scattered regardless of their cell cycle phase and mitochondrial genes expression level. So there is no need to regress out the effect of cell cycle and mitochondrial expression in this dataset.
 
