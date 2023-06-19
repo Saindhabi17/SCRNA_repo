@@ -452,7 +452,7 @@ This function is useful for normalization and regressing out sources of unwanted
 
 This regularization process yields residuals, which represent effectively normalized data values that are no longer correlated with sequencing depth.
 
-This method is more accurate method of normalizing, estimating the variance of the raw filtered data, and identifying the most variable genes. In practice SCTransform single command replaces NormalizeData(), ScaleData(), and FindVariableFeatures(). Since we have two group of sample we will run SCTransform on each groups after doing "integration".
+This method is more accurate method of normalizing, estimating the variance of the raw filtered data, and identifying the most variable genes. In practice SCTransform single command replaces ```NormalizeData()```, ```ScaleData()```, and ```FindVariableFeatures()```. Since we have two group of sample we will run SCTransform on each groups after doing "integration".
 
 # Integration
 
@@ -584,8 +584,10 @@ The Pc's are-
 png(filename = "PCA_integrated.png", width = 16, height = 8.135, units = "in", res = 300)
 PCAPlot(seurat_integrated,
         split.by = "sample")
-dev.off() 
+dev.off()
 ```
+![PCA_integrated](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/bf4ea919-7c32-4b2d-92e3-02a883651dd0
+
 ### Visualizing seurat_integrated:
 ```R
 seurat_integrated
