@@ -302,6 +302,8 @@ names(met_after)[1] <- 'count'
 # count
 cell_count <- data.frame(rbind(met_before, met_after))
 ```
+
+
 ### Visualization of the Re-assessment :
 ```R
 cell_count %>% ggplot(aes(x=cell, y=count, fill=QCgroup)) + 
@@ -313,6 +315,9 @@ cell_count %>% ggplot(aes(x=cell, y=count, fill=QCgroup)) +
   xlab("samples") +
   ggtitle("nCells count before and after QC")
 ```
+
+![Re_assess_QC 1049](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/d4d81b61-80f6-44ec-95ff-0579155849dd)
+
 ### Visualizing the correlation between genes detected and number of UMIs and determine whether strong presence of cells with low numbers of genes/UMIs
 ```R
 metadata_clean %>% 
@@ -327,6 +332,8 @@ metadata_clean %>%
   geom_hline(yintercept = 500) +
   facet_wrap(~seq_folder)
 ```
+![Rplot_correlation_between_genes_detected_and_number_of_UMIs](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/0bab40d2-b95f-4581-9e90-fb13d6dc6453)
+
 # Normalization and Regressing Out Unwanted Variation
 
 ## Exploring sources of unwanted variation
