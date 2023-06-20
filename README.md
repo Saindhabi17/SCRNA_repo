@@ -786,7 +786,7 @@ dev.off()
 #saving the file for further use
 save(seurat_integrated, file="seurat_integrated.RData")
 ```
-# CLUSTERING QC
+# Clustering Quality Control
 After clustering, we need to make sure that the assigned clusters are true representative of biological clusters (cell clusters) not due to technical or unwanted source of variation (like cell cycle stages). Also , in this step we need to identify cell type for each cluster based on the known cell type markers.
 
 ### Segregation of clusters by sample
@@ -852,11 +852,12 @@ DimPlot(seurat_integrated,
         label = TRUE, 
         split.by = "Phase")  + NoLegend()
 dev.off()
+```
+![umap_cluster_cell_cycle_New](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/bff3a16a-b61b-40cc-be48-61fc17ea1b72)
 
-
-
-# Segregation of clusters by various sources of uninteresting variation
-
+### Segregation of clusters by various sources of uninteresting variation
+We expect to see a uniform coluring for all variables in all clusters. Sometimes this is not the case. Like here ```nUMI``` and ```nGene``` showing higher value is some clusters. We have to watch these cluster and inspect them in terms of type of cell therein. So that may explain some of the variation that we are seeing.
+```R
 # Determining metrics to plot present in seurat_integrated@meta.data
 metrics <-  c("nUMI", "nGene", "S.Score", "G2M.Score", "mitoRatio")
 png(filename = "umap_unwanted_source_clustering.png", width = 16, height = 8.135, units = "in", res = 300)
@@ -868,11 +869,13 @@ FeaturePlot(seurat_integrated,
             min.cutoff = 'q10',
             label = TRUE)
 dev.off()
+```
+![umap_unwanted_source_clustering_New](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/63d27c86-8c76-45af-902a-51ac04f5dea1)
 
+#### Exploration of the PCs driving the different clusters
+We hope that the defined PCs could separate clusters well.We can see how the clusters are represented by the different PCs.Then we could look back at our genes driving this PC to get an idea of what the cell types might be in each cluster.
 
-
-# Exploration of the PCs driving the different clusters
-
+```R
 # Defining the information in the seurat object of interest
 columns <- c(paste0("PC_", 1:18),
              "ident",
@@ -908,12 +911,13 @@ map(paste0("PC_", 1:18), function(pc){
 }) %>% 
   plot_grid(plotlist = .)
 dev.off()
+```
 
-
-
+```R
 # Examine PCA results 
 print(seurat_integrated[["pca"]], dims = 1:5, nfeatures = 5)
-
+```
+```R
 # PC_ 1 
 # Positive:  CD52, PTPRC, CCL5, CD3D, KRT19 
 # Negative:  IGFBP7, MGP, SPARC, SPARCL1, VIM 
@@ -933,9 +937,13 @@ print(seurat_integrated[["pca"]], dims = 1:5, nfeatures = 5)
 # PC_ 5 
 # Positive:  LUM, MMP2, PTGDS, DCN, RARRES2 
 # Negative:  RGS5, ACTA2, NDUFA4L2, MYL9, PPP1R14A
-
-
-
+```
+#### Normalizing RNA data for visualization purposes
+1. Fibroblast
+2. Endothelial Cells
+3. T cells
+   
+```R
 # Normalizing RNA data for visualization purposes
 seurat_integrated <- NormalizeData(seurat_integrated, verbose = FALSE)
 
@@ -948,7 +956,9 @@ FeaturePlot(seurat_integrated,
             min.cutoff = 'q10', 
             label = TRUE)
 dev.off()
-
+```
+![umap_fibroblast_New](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/5b34cb5d-bff8-460d-a7dd-ade9dbfd8fba)
+```R
 # Endothelial Cells
 png(filename = "umap_endothelial.png", width = 16, height = 8.135, units = "in", res = 300)
 FeaturePlot(seurat_integrated, 
@@ -958,7 +968,9 @@ FeaturePlot(seurat_integrated,
             min.cutoff = 'q10', 
             label = TRUE)
 dev.off()
-
+```
+![umap_endothelial_New](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/ccf53d95-47d5-4097-a654-0f7d407e0f8a)
+```R
 # T Cells
 png(filename = "umap_t_cells.png", width = 16, height = 8.135, units = "in", res = 300)
 FeaturePlot(seurat_integrated, 
@@ -968,11 +980,10 @@ FeaturePlot(seurat_integrated,
             min.cutoff = 'q10', 
             label = TRUE)
 dev.off() 
-
-##  
-
-
-
+```
+![umap_t_cells_New](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/6ca3aa08-44ac-41dc-adfc-f8c4a5b00431)
+ 
+```R
 # MARKER IDENTIFICATION 
 
 
