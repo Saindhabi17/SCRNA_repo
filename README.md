@@ -586,17 +586,24 @@ PCAPlot(seurat_integrated,
         split.by = "sample")
 dev.off()
 ```
-![PCA_integrated](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/bf4ea919-7c32-4b2d-92e3-02a883651dd0
+![PCA_integrated](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/98ba0082-ebd6-4e10-ac9a-4253fc61846a)
 
 ### Visualizing seurat_integrated:
 ```R
 seurat_integrated
+```
+```R
 #An object of class Seurat 
 #49220 features across 86119 samples within 3 assays 
 #Active assay: integrated (3000 features, 3000 variable features)
 #2 other assays present: RNA, SCT
 #1 dimensional reduction calculated: pca
 ```
+# Clustering: 
+After integration, clustering of cells is done based on similarity of gene expression profiles using Seurat's PCA scores.
+
+Next, cluster quality is evaluated by checking for sources of uninteresting variation, principal component influence, and exploring cell type identities using known markers.
+
 ### Plotting UMAP
 ```R
 # Run UMAP
@@ -610,15 +617,17 @@ png(filename = "UMAP_integrated.png", width = 16, height = 8.135, units = "in", 
 DimPlot(seurat_integrated, split.by = "sample")
 dev.off()
 ```
+![UMAP_integrated](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/5d70390f-5007-4d15-824c-6351328de26e)
 
-# Clustering Cells Based on Top PCs (Metagenes)
+## Clustering Cells Based on Top PCs (Metagenes)
 
-## Identify significant PCs
+### Identify significant PCs
 
-For new method like SCTransform it is not needed to calculate the number of PCs for clustering. However older methods could not efficiently removed technical biases , so using them it was necessary to have some idea about the number of PCs that can capture most of information in the dataset.
+For new method like ```SCTransform``` it is not needed to calculate the number of PCs for clustering. However older methods could not efficiently removed technical biases , so using them it was necessary to have some idea about the number of PCs that can capture most of information in the dataset.
 
+#### Exploring heatmap of PCs
 ```R
-# Explore heatmap of PCs
+# Exploring heatmap of PCs
 png(filename = "heatmap_integrated_2.png", width = 16, height = 8.135, units = "in", res = 300)
 DimHeatmap(seurat_integrated, 
            dims = 1:9, 
@@ -626,6 +635,9 @@ DimHeatmap(seurat_integrated,
            balanced = TRUE)
 dev.off()
 ```
+![heatmap_integrated_2](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/bafa1e8c-7142-4370-93fc-55e471cb4521)
+
+#### Printing out the most variable genes driving PCs
 ```R
 # Printing out the most variable genes driving PCs
 print(x = seurat_integrated[["pca"]], 
@@ -673,6 +685,7 @@ print(x = seurat_integrated[["pca"]],
 # Positive:  CRH, CCL5, LY6D, RPS19, ACKR1 
 # Negative:  HSPA1A, HSPA1B, DNAJB1, LCN15, HSP90AA1 
 ```
+#### Determining how many Pcs should be considered for clustering
 ```R
 # To determine how many Pcs should be considered for clustering:
 # Plotting the elbow plot
@@ -681,6 +694,9 @@ ElbowPlot(object = seurat_integrated,
           ndims = 40)
 dev.off()
 ```
+![elbow](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/1532265a-141b-48e5-90f4-585bb0c9c041) 
+
+#### Making it more quantitative: 
 ```R
 # to make it more quantitative :
 # Determining percent of variation associated with each PC
@@ -700,7 +716,8 @@ pct
 # Calculate cumulative percents for each PC
 cumu <- cumsum(pct)
 cumu
-
+```
+```R
 #[1]   7.959627  14.440106  19.948409  24.409328  28.412503  32.009256  35.405581
 #[8]  38.489848  41.342462  43.975197  46.428860  48.836451  51.110458  53.328474
 #[15]  55.398579  57.421894  59.358065  61.148041  62.894571  64.537810  66.171962
@@ -709,39 +726,45 @@ cumu
 #[36]  85.909146  87.025340  88.112684  89.178005  90.241358  91.289499  92.318435
 #[43]  93.335674  94.341134  95.326013  96.293771  97.233639  98.166555  99.090945
 #[50] 100.000000
-
+```
+```R
 # Determine which PC exhibits cumulative percent greater than 90% and % variation associated with the PC as less than 5
 co1 <- which(cumu > 90 & pct < 5)[1]
 co1
+```
+```R
 # 40
-
+```
+```R
 # Determine the difference between variation of PC and subsequent PC
 co2 <- sort(which((pct[1:length(pct) - 1] - pct[2:length(pct)]) > 0.1), decreasing = T)[1] + 1
-
 # last point where change of % of variation is more than 0.1%.
 co2
+```
+```R
 # 20
-
+```
+```R
 # Minimum of the two calculation is the optimal number of PC to pick.
 pcs <- min(co1, co2)
 pcs
+```
+```R
 # 20
-
-
-# CLUSTER THE CELLS - VISUALIZATION
-
+```
+## Clustering of the Cells - Visualization 
+```R
 # to check what is active assay
 DefaultAssay(object = seurat_integrated)
 
 # Determining the K-nearest neighbor graph
 seurat_integrated <- FindNeighbors(object = seurat_integrated, 
                                    dims = 1:18)
-
+                                   
 #Find clusters
 # Determining the clusters for various resolutions                                
 seurat_integrated <- FindClusters(object = seurat_integrated,
                                   resolution = c(0.2, 0.4, 0.6, 0.8, 1.0, 1.4))
-
 
 # Exploring resolutions
 head(seurat_integrated@meta.data)
@@ -756,37 +779,30 @@ DimPlot(seurat_integrated,
         label = TRUE,
         label.size = 6)
 dev.off()
+```
+![umap_cluster_with_label_New](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/0ab0a04d-87f7-4bf8-9257-9c29fb7d0f02) 
 
-
+```R
 #saving the file for further use
 save(seurat_integrated, file="seurat_integrated.RData")
-
-
-
+```
 # CLUSTERING QC
+After clustering, we need to make sure that the assigned clusters are true representative of biological clusters (cell clusters) not due to technical or unwanted source of variation (like cell cycle stages). Also , in this step we need to identify cell type for each cluster based on the known cell type markers.
 
-# Segregation of clusters by sample
+### Segregation of clusters by sample
 
+```R
 # Extracting identity and sample information from seurat object to determine the number of cells per cluster per sample
-
 library(dplyr)
-library(tidyr)
-
-# n_cells <- FetchData(seurat_integrated, 
-#                      vars = c("ident", "orig.ident")) %>%
-#         dplyr::count(ident, orig.ident) %>%
-#         tidyr::spread(ident, n)
+library(tidyr) 
 
 n_cells <- FetchData(seurat_integrated, 
                      vars = c("ident", "orig.ident"))
 n_cells <- dplyr::count(n_cells, ident, orig.ident)
 n_cells <- tidyr::spread(n_cells, ident, n)
 
-
-
 #Ading sample data from paper; we expect to see samples from same group have more or less similar number of cells in each cluster. 
 #So normal samples should show similar patterns: SRR12603780, SRR12603781, and SRR12603788.
-
 
 sampleData<- data.frame(tibble::tribble(
   ~sample_id, ~gender, ~age, ~Grade, ~Invasiveness, ~Surgery_Type, ~Tumor_size_cm,
@@ -803,20 +819,18 @@ sampleData<- data.frame(tibble::tribble(
   "SRR12603780",     "M",  63L, "normal",   "normal",  "Cystectomy",            "-"
 ))
 
-
 tmp_df<- seurat_integrated@meta.data
-
 merged_df <- merge(tmp_df, sampleData, 
                    by.x = "orig.ident", 
                    by.y = "sample_id", 
                    all.x = TRUE)
-
 seurat_integrated@meta.data<-merged_df
+rownames(seurat_integrated@meta.data) <- seurat_integrated@meta.data$cells
 
 # Viewing table
 head(n_cells)
-# saving objects (to mark where and when we stored the file)
 
+# saving objects (to mark where and when we stored the file)
 saveRDS(seurat_integrated, "seurat_integrated.RDS")
 
 # UMAP of cells in each cluster by sample
@@ -826,13 +840,13 @@ DimPlot(seurat_integrated,
         label = TRUE, 
         split.by = "sample")  + NoLegend()
 dev.off()
+```
+![umap_cluster_sample_New](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/045eeadd-0b83-44cf-8ba8-e4e864b3d6d9)
 
+### Segregation of clusters by cell cycle phase (unwanted source of variation) 
 
-
-# Segregation of clusters by cell cycle phase (unwanted source of variation) 
-
+```R
 # Exploring whether clusters segregate by cell cycle phase
-
 png(filename = "umap_cluster_cell_cycle.png", width = 16, height = 8.135, units = "in", res = 300)
 DimPlot(seurat_integrated,
         label = TRUE, 
