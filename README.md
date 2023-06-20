@@ -147,8 +147,7 @@ merged_metadata %>%
   theme(plot.title = element_text(hjust=0.5, face="bold")) +
   ggtitle("NCells before QC")
 ```
-
-[Rplot_cell_counts_per_sample.pdf](https://github.com/Saindhabi17/SCRNA_repo/files/11766170/Rplot_cell_counts_per_sample.pdf)
+![Rplot_cell_counts_per_sample](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/deb30e58-55c8-48c7-a700-4ec905d5fa98)
 
 ### UMIs per Sample
 Typically, we expect the UMI counts per cell to be higher than 500, which is the lower limit of the expected range. If the UMI counts range between 500-1000, the data is still usable, but deeper sequencing may have been beneficial for these cells.
