@@ -912,6 +912,7 @@ map(paste0("PC_", 1:18), function(pc){
   plot_grid(plotlist = .)
 dev.off()
 ```
+![umap_on_pcs_New](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/9314fdce-4fcd-4132-b1d4-972998150024)
 
 ```R
 # Examine PCA results 
