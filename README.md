@@ -1,4 +1,4 @@
-# SCRNA_repo
+# Single Cell RNA Sequencing Repo
 The Packages I installed with the libraries are listed here: 
 ```R
 # PACKAGES: 
