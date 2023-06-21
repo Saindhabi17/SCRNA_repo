@@ -754,7 +754,7 @@ pcs
 ## Clustering of the Cells - Visualization 
 ```R
 # to check what is active assay
-DefaultAssay(object = seurat_integrated)
+DefaultAssay(object = seurat_integrated)<- "Integrated" 
 
 # Determining the K-nearest neighbor graph
 seurat_integrated <- FindNeighbors(object = seurat_integrated, 
@@ -983,17 +983,31 @@ dev.off()
 ```
 ![umap_t_cells_New](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/6ca3aa08-44ac-41dc-adfc-f8c4a5b00431)
  
+# Marker Identification: 
+
+After clustering this step aims to determine the gene markers for each of the clusters and identify cell types of each cluster using markers. Also this step helps to determine whether there's a need to re-cluster based on cell type markers, or maybe clusters need to be merged or split.
+
+For marker identification there are three functions in the seurat package, each with different application:
+
+1. ```FindAllMarkers()```   
+2. ```FindConservedMarkers()```  
+3. ```FindMarkers()```
+   
+```FindAllMarkers()```: 
+It should only be used when comparing a cluster against other clusters belong to the same group. i.e. this function should be used only when we have one group/condition.
+
 ```R
-# MARKER IDENTIFICATION 
-
-
 #______________________________ NOT TO BE RUN________________________________
 # Find markers for every cluster compared to all remaining cells, report only the positive ones
 markers <- FindAllMarkers(object = seurat_integrated, 
                                    only.pos = TRUE,
                                    logfc.threshold = 0.25)
 
+```
+```FindConservedMarkers()```: 
+When we have two groups like tumor vs normal or invasive vs. non invasive identifying conserved markers is the best approach. In this way, we find DE genes for a given cluster in once condition (e.g. invasive) comparing the cluster against the rest of cluster in the same condition group. We do the same for that given cluster in the other condition (non-invasive). Finally the two list will be mergerd to give us the conserved marker for a given cluster.
 
+```R 
 # Explecity set the defult object to normalized values
 DefaultAssay(seurat_integrated) <- "RNA"
 
@@ -1002,11 +1016,9 @@ cluster0_conserved_markers <- FindConservedMarkers(seurat_integrated,
                                                    grouping.var= "Invasiveness",
                                                    only.pos = TRUE,
                                                    logfc.threshold = 0.60)
-
-view(seurat_cluster@meta.data)
-
-# Adding more annotations to the result
-
+```
+Adding more annotations to the result:
+```R
 # Connect to AnnotationHub
 ah <- AnnotationHub()
 
@@ -1031,7 +1043,10 @@ annotations <- genes(edb,
 # Select annotations of interest
 annotations <- annotations %>%
   dplyr::select(gene_id, gene_name, seq_name, gene_biotype, description)
+```
+Finding conserved markers for all clusters: 
 
+```R
 # Create function to get conserved markers for any given cluster
 get_conserved <- function(cluster){
   tryCatch({
@@ -1053,8 +1068,7 @@ get_conserved <- function(cluster){
 }
 # this function can be an argument for 'map_dfr' function :
 # Iterate function across desired clusters
-   
-
+conserved_markers <- map_dfr(c(0:15), get_conserved)   
 view(conserved_markers)
 
 # Extract top 10 markers per cluster
