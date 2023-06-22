@@ -1013,7 +1013,7 @@ DefaultAssay(seurat_integrated) <- "RNA"
 
 cluster0_conserved_markers <- FindConservedMarkers(seurat_integrated,
                                                    ident.1 = 0,
-                                                   grouping.var= "Invasiveness",
+                                                   grouping.var= "sample",
                                                    only.pos = TRUE,
                                                    logfc.threshold = 0.60)
 ```
@@ -1052,7 +1052,7 @@ get_conserved <- function(cluster){
   tryCatch({
     FindConservedMarkers(seurat_integrated,
                          ident.1 = cluster,
-                         grouping.var = "Invasiveness",
+                         grouping.var = "sample",
                          only.pos = TRUE,
                          logfc.threshold = 0.60) %>%
       rownames_to_column(var = "gene") %>%
@@ -1077,9 +1077,9 @@ top10 <- conserved_markers %>%
   group_by(cluster_id) %>% 
   top_n(n = 10, 
         wt = avg_fc)
-
+```
+```R
 head(top10)
-
 
 # A tibble: 6 × 16
 # Groups:   cluster_id [1]
@@ -1092,20 +1092,40 @@ head(top10)
 #5          0 FYN              0              1.21        0.931        0.403                0          0           1.11       0.763      0.188              0        0              0
 #6          0 SYTL3            0              1.27        0.788        0.133                0          0           0.931      0.549      0.101              0        0              0
 # ℹ 2 more variables: description <chr>, avg_fc <dbl>
+```
+```R
+data.table::fwrite(top10, "top10_conserved_markers.csv")
+```
+## Identifying which markers are associated to more clusters, then assign cell type to those clusters
 
-
-
-data.table::fwrite(top10, "blca_top10_conserved_markers.csv")
-
+```R
 top10_mod <- data.frame(unclass(table(top10$gene, top10$cluster_id)))
 
 data.table::fwrite(top10_mod, "top10_mod_conserved_markers.csv")
 
 # markers with highest frequency
 M <- c("KRT7", "KRT19", "FCER1G", "AIF1", "AQP3", "CCL5", "CD24", "CD3D", "CD52", "CLDN4", "COL1A1", "COL1A2", "CRTAC1", "CXCL8", "DCN", "FABP4", "FABP5", "FXYD3", "GZMA", "HLA-DRA", "IGHA1", "IGHG1", "IGHG3", "IGHG4", "IGKC", "IGLC1", "IGLC2", "IGLC3", "JCHAIN")
+```
+So the cell type for top markers: 
 
-View("blca_top10_conserved_markers.csv")
+| Cell Type   | Genes |
+| ------------- | ------------- |
+| Basal cells | KRT7, KRT19, AQP3, CD24,CXCL8,FXYD3 |
+| Dendritic cells  | FCER1G,AIF1,FABP4 |
+| Gamma delta T cells | CCL5,GZMA |
+| NK cell | CCL5,GZMA |
+| T cells | CD3D, CD52 |
+| Macrophages | CD52 |
+| Luminal epithelial cells | CLDN4 |
+| Fibroblasts  | COLA1, COLA2,CXCL8, DCN |
+| Epithelial cells | CRTAC1,FXYD3 |
+| Endothelial cells  | FABP4, FABP5 |
+| Plasma cell | IGHA1,IGHG1,IGHG3,IGHG4,IGKC,IGLC1,IGLC3,IGLC3,JCHAIN |
 
+## Visualizing some of the genes and in which cluster they show expression:
+
+### Basal Cells:
+```
 # Plot interesting marker gene expression - basal cells
 png(filename = "umap_high_freq_basal_cells.png", width = 16, height = 8.135, units = "in", res = 300)
 FeaturePlot(object = seurat_integrated, 
@@ -1115,15 +1135,17 @@ FeaturePlot(object = seurat_integrated,
             label = TRUE,
             repel = TRUE)
 dev.off()
-
-
+```
+![umap_high_freq_basal_cells](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/e5f2ae89-85ed-4eb7-b310-92879b72e64c)
+```R
 # Vln plot - cluster 0 - basal cells
 png(filename = "violin_high_freq_basal_cells.png", width = 16, height = 8.135, units = "in", res = 300)
 VlnPlot(object = seurat_integrated, 
         features = c("KRT7", "KRT19", "AQP3", "CD24", "FXYD3", "CXCL8"))
 dev.off() 
-
-
+```
+### Plasma Cells:
+```R
 # Plot interesting marker gene expression - plasma cells
 png(filename = "umap_high_freq_Plasma_cells.png", width = 26, height = 15.135, units = "in", res = 600)
 FeaturePlot(object = seurat_integrated, 
@@ -1133,15 +1155,19 @@ FeaturePlot(object = seurat_integrated,
             label = TRUE,
             repel = TRUE)
 dev.off()
-
-
+```
+![umap_high_freq_Plasma_cells](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/c64b9358-ab88-42f4-8299-c49d5024cca8)
+```
 # Vln plot - cluster 0 - plasma cells
 png(filename = "violin_high_freq_Plasma_cells.png", width = 26, height = 10.135, units = "in", res = 600)
 VlnPlot(object = seurat_integrated, 
         features = c("IGHA1","IGHG1","IGHG3","IGHG4","IGKC","IGLC1","IGLC3","IGLC3","JCHAIN"))
 dev.off()
+```
+![violin_high_freq_Plasma_cells](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/fec8b6e2-97d3-418c-94a5-d6f792a6b32a)
 
-
+### Dendritic Cells: 
+```R
 # Plot interesting marker gene expression - dendritic cells
 png(filename = "umap_high_freq_dc.png", width = 16, height = 8.135, units = "in", res = 300)
 FeaturePlot(object = seurat_integrated, 
@@ -1151,15 +1177,19 @@ FeaturePlot(object = seurat_integrated,
             label = TRUE,
             repel = TRUE)
 dev.off()
-
-
+```
+![umap_high_freq_dc](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/fee9ffdc-5150-471a-be55-271e9d71b91d)
+```R
 # Vln plot - cluster 0 - dendritic cells
 png(filename = "violin_high_freq_dc.png", width = 16, height = 8.135, units = "in", res = 300)
 VlnPlot(object = seurat_integrated, 
         features = c("FCER1G","AIF1","FABP4"))
 dev.off()
+```
+![violin_high_freq_dc](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/fcd1b7b4-6685-4e93-b2a0-c5b6091b9fef)
 
-
+### Luminal Epithelial Cells
+```R
 # Plot interesting marker gene expression - luminal epithelial cells
 png(filename = "umap_high_freq_luminal_epithelial.png", width = 16, height = 8.135, units = "in", res = 300)
 FeaturePlot(object = seurat_integrated, 
@@ -1169,8 +1199,10 @@ FeaturePlot(object = seurat_integrated,
             label = TRUE,
             repel = TRUE)
 dev.off()
+```
 
 
+```R
 # Vln plot - cluster 0 - luminal epithelial cells
 png(filename = "violin_high_freq_luminal_epithelial.png", width = 16, height = 8.135, units = "in", res = 300)
 VlnPlot(object = seurat_integrated, 
