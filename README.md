@@ -1188,7 +1188,7 @@ dev.off()
 ```
 ![violin_high_freq_dc](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/fcd1b7b4-6685-4e93-b2a0-c5b6091b9fef)
 
-### Luminal Epithelial Cells
+### Luminal Epithelial Cells:
 ```R
 # Plot interesting marker gene expression - luminal epithelial cells
 png(filename = "umap_high_freq_luminal_epithelial.png", width = 16, height = 8.135, units = "in", res = 300)
@@ -1200,7 +1200,7 @@ FeaturePlot(object = seurat_integrated,
             repel = TRUE)
 dev.off()
 ```
-
+![umap_high_freq_luminal_epithelial](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/5d1aaa01-5d87-4dcb-88d9-2b77407c44e0)
 
 ```R
 # Vln plot - cluster 0 - luminal epithelial cells
@@ -1208,8 +1208,11 @@ png(filename = "violin_high_freq_luminal_epithelial.png", width = 16, height = 8
 VlnPlot(object = seurat_integrated, 
         features = c("CLDN4"))
 dev.off()
+```
+![violin_high_freq_luminal_epithelial](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/24ef7736-829f-4308-b176-b6db375bc90d)
 
-
+### Epithelial Cells:
+```R
 # Plot interesting marker gene expression - epithelial cells
 png(filename = "umap_high_freq_epithelial.png", width = 16, height = 8.135, units = "in", res = 300)
 FeaturePlot(object = seurat_integrated, 
@@ -1219,16 +1222,18 @@ FeaturePlot(object = seurat_integrated,
             label = TRUE,
             repel = TRUE)
 dev.off()
-
-
+```
+```
 # Vln plot - cluster 0 - epithelial cells
 png(filename = "violin_high_freq_epithelial.png", width = 16, height = 8.135, units = "in", res = 300)
 VlnPlot(object = seurat_integrated, 
         features = c("CRTAC1","FXYD3"))
 dev.off()
+```
+![violin_high_freq_epithelial](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/10c7ac16-8897-451a-b589-6046d40fe272)
 
-
-
+### Endothelial Cells:
+```R
 # Plot interesting marker gene expression - endothelial cells
 png(filename = "umap_high_freq_endothelial.png", width = 16, height = 8.135, units = "in", res = 300)
 FeaturePlot(object = seurat_integrated, 
@@ -1238,15 +1243,18 @@ FeaturePlot(object = seurat_integrated,
             label = TRUE,
             repel = TRUE)
 dev.off()
+```
+![umap_high_freq_endothelial](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/ea19cace-e687-4099-aa75-36d10a997f92)
 
-
+```
 # Vln plot - cluster 0 - endothelial cells
 png(filename = "violin_high_freq_endothelial.png", width = 16, height = 8.135, units = "in", res = 300)
 VlnPlot(object = seurat_integrated, 
         features = c("FABP4", "FABP5"))
 dev.off()
-
-
+```
+![violin_high_freq_endothelial](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/81633771-3b7e-47af-85b4-79e9d4630e08)
+```
 
 d <- data.table::fread("blca_top10_conserved_markers.csv")
 
