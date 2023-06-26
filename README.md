@@ -1136,7 +1136,8 @@ FeaturePlot(object = seurat_integrated,
             repel = TRUE)
 dev.off()
 ```
-![umap_high_freq_basal_cells](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/e5f2ae89-85ed-4eb7-b310-92879b72e64c)
+![umap_high_freq_basal_cells](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/28b4116c-df07-441d-9c68-5a39534bfa2c)
+
 ```R
 # Vln plot - cluster 0 - basal cells
 png(filename = "violin_high_freq_basal_cells.png", width = 16, height = 8.135, units = "in", res = 300)
@@ -1144,6 +1145,8 @@ VlnPlot(object = seurat_integrated,
         features = c("KRT7", "KRT19", "AQP3", "CD24", "FXYD3", "CXCL8"))
 dev.off() 
 ```
+![violin_high_freq_basal_cells](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/9d3c1ca6-0432-4710-9cb1-0a155e155548)
+
 ### Plasma Cells:
 ```R
 # Plot interesting marker gene expression - plasma cells
