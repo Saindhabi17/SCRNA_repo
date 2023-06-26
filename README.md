@@ -9,9 +9,11 @@ The steps are-
 5. Integration
 6. Clustering
 7. Marker Identification
-8. a. Trajectory Analysis
-   b. DE of Cell Types or Genes Between Sample Groups
-   c. Custom Analyses
+8. (a) Trajectory Analysis
+   
+   (b) DE of Cell Types or Genes Between Sample Groups
+   
+   (c) Custom Analyses
    
 The Packages I installed with the libraries are listed here: 
 ```R
