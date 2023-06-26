@@ -1254,8 +1254,11 @@ VlnPlot(object = seurat_integrated,
 dev.off()
 ```
 ![violin_high_freq_endothelial](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/81633771-3b7e-47af-85b4-79e9d4630e08)
-```
 
+Visualizing Clusters:
+
+Cluster 4: 
+```
 d <- data.table::fread("blca_top10_conserved_markers.csv")
 
 png(filename = "umap_cluster4_markers.png", width = 16, height = 8.135, units = "in", res = 300)
@@ -1266,13 +1269,19 @@ FeaturePlot(object = seurat_integrated,
             label = TRUE,
             repel = TRUE)
 dev.off()
-
+```
+![umap_cluster4_markers](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/9b90d41b-7ac7-4dcb-a0bf-51a81a092560)
+```
 # Vln plot - cluster 0
 png(filename = "violin_cluster4_markers.png", width = 16, height = 8.135, units = "in", res = 300)
 VlnPlot(object = seurat_integrated, 
         features = d$gene[d$cluster_id == "4"])
 dev.off() 
+```
+![violin_cluster4_markers](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/d5809f63-097d-4937-b907-65d4e4fb2bbd)
 
+Cluster 1: 
+```
 png(filename = "umap_cluster1_markers.png", width = 16, height = 8.135, units = "in", res = 300)
 FeaturePlot(object = seurat_integrated, 
             features = d$gene[d$cluster_id == "1"],
@@ -1281,13 +1290,20 @@ FeaturePlot(object = seurat_integrated,
             label = TRUE,
             repel = TRUE)
 dev.off()
+```
+![umap_cluster1_markers](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/16d020fa-7c40-45df-badc-39b10cfae057)
 
+```
 # Vln plot - cluster 0
 png(filename = "violin_cluster1_markers.png", width = 16, height = 8.135, units = "in", res = 300)
 VlnPlot(object = seurat_integrated, 
         features = d$gene[d$cluster_id == "1"])
 dev.off()
+```
+![violin_cluster1_markers](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/c22f2f31-910e-42ec-b152-d6a490d41f56)
 
+Cluster 12:
+```
 png(filename = "umap_cluster12_markers.png", width = 16, height = 8.135, units = "in", res = 300)
 FeaturePlot(object = seurat_integrated, 
             features = d$gene[d$cluster_id == "12"],
@@ -1296,13 +1312,13 @@ FeaturePlot(object = seurat_integrated,
             label = TRUE,
             repel = TRUE)
 dev.off()
+```
+![umap_cluster12_markers](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/dae81f54-5cce-4b9b-9e79-54b5aa1e7f5b)
 
+```
 # Vln plot - cluster 0
 png(filename = "violin_cluster12_markers.png", width = 16, height = 8.135, units = "in", res = 300)
 VlnPlot(object = seurat_integrated, 
         features = d$gene[d$cluster_id == "12"])
 dev.off()
-
-
-
 ```
