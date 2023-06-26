@@ -1,4 +1,18 @@
 # Single Cell RNA Sequencing Repo
+## Single Cell RNA-seq Clustering Workflow:
+
+The steps are- 
+1. Sequence Reads
+2. Generate Count Matrix
+3. Filter Cells Using Quality Metrics
+4. Normalize Data & Regress-out Unwanted Variation
+5. Integration
+6. Clustering
+7. Marker Identification
+8. a. Trajectory Analysis
+   b. DE of Cell Types or Genes Between Sample Groups
+   c. Custom Analyses
+   
 The Packages I installed with the libraries are listed here: 
 ```R
 # PACKAGES: 
@@ -250,10 +264,10 @@ To investigate the potential cause of high mitochondrial expression ratios, it i
 # filtering out low quality cells using selected thresholds - these will change with experiment
 filtered_seurat <- subset(merged_seurat, 
                           subset= nUMI >= 1000 &
-                            nGene >= 500 &
-                            nGene <= 6000 & 
-                            log10GenesPerUMI > 0.80 & 
-                            mitoRatio < 0.10) 
+                          nGene >= 500 &
+                          nGene <= 6000 & 
+                          log10GenesPerUMI > 0.80 & 
+                          mitoRatio < 0.10) 
 
 # exploring filtered seurat meta data
 View(filtered_seurat@meta.data)
@@ -1226,6 +1240,8 @@ FeaturePlot(object = seurat_integrated,
             repel = TRUE)
 dev.off()
 ```
+![umap_high_freq_epithelial](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/fab7d035-1910-4ef6-9660-1c21161d146e)
+
 ```
 # Vln plot - cluster 0 - epithelial cells
 png(filename = "violin_high_freq_epithelial.png", width = 16, height = 8.135, units = "in", res = 300)
@@ -1233,7 +1249,7 @@ VlnPlot(object = seurat_integrated,
         features = c("CRTAC1","FXYD3"))
 dev.off()
 ```
-![violin_high_freq_epithelial](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/10c7ac16-8897-451a-b589-6046d40fe272)
+![violin_high_freq_epithelial](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/540aad33-50b2-4d93-b1c6-90c64559db6d)
 
 ### Endothelial Cells:
 ```R
@@ -1318,10 +1334,3 @@ dev.off()
 ```
 ![umap_cluster12_markers](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/dae81f54-5cce-4b9b-9e79-54b5aa1e7f5b)
 
-```
-# Vln plot - cluster 0
-png(filename = "violin_cluster12_markers.png", width = 16, height = 8.135, units = "in", res = 300)
-VlnPlot(object = seurat_integrated, 
-        features = d$gene[d$cluster_id == "12"])
-dev.off()
-```
