@@ -1586,25 +1586,42 @@ png(filename = "harmony_blca_clsuter_markers_cluster0.png", width = 16, height =
 plotList[[1]]
 dev.off()
 
-png(filename = "harmony_blca_clsuter_markers_cluster9.png", width = 16, height = 8.135, units = "in", res = 300)
-plotList[[10]]
+png(filename = "harmony_blca_clsuter_markers_cluster1.png", width = 16, height = 8.135, units = "in", res = 300)
+plotList[[2]]
+dev.off()
+
+png(filename = "harmony_blca_clsuter_markers_cluster2.png", width = 16, height = 8.135, units = "in", res = 300)
+plotList[[3]]
+dev.off()
+
+png(filename = "harmony_blca_clsuter_markers_cluster3.png", width = 16, height = 8.135, units = "in", res = 300)
+plotList[[4]]
+dev.off()
+
+png(filename = "harmony_blca_clsuter_markers_cluster4.png", width = 16, height = 8.135, units = "in", res = 300)
+plotList[[5]]
+dev.off()
+
+png(filename = "harmony_blca_clsuter_markers_cluster5.png", width = 16, height = 8.135, units = "in", res = 300)
+plotList[[6]]
+dev.off()
+
+png(filename = "harmony_blca_clsuter_markers_cluster6.png", width = 16, height = 8.135, units = "in", res = 300)
+plotList[[7]]
+dev.off()
+
+png(filename = "harmony_blca_clsuter_markers_cluster7.png", width = 16, height = 8.135, units = "in", res = 300)
+plotList[[8]]
+dev.off()
+
+png(filename = "harmony_blca_clsuter_markers_cluster8.png", width = 16, height = 8.135, units = "in", res = 300)
+plotList[[9]]
 dev.off()
 
 png(filename = "harmony_blca_clsuter_markers_cluster9.png", width = 16, height = 8.135, units = "in", res = 300)
 plotList[[10]]
 dev.off()
 
-png(filename = "harmony_blca_clsuter_markers_cluster9.png", width = 16, height = 8.135, units = "in", res = 300)
-plotList[[10]]
-dev.off()
-
-png(filename = "harmony_blca_clsuter_markers_cluster9.png", width = 16, height = 8.135, units = "in", res = 300)
-plotList[[10]]
-dev.off()
-
-png(filename = "harmony_blca_clsuter_markers_cluster9.png", width = 16, height = 8.135, units = "in", res = 300)
-plotList[[10]]
-dev.off()
 #
 
 
