@@ -1336,3 +1336,278 @@ dev.off()
 ```
 ![umap_cluster12_markers](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/dae81f54-5cce-4b9b-9e79-54b5aa1e7f5b)
 
+
+# Ananlysis Considering Cell Super Clusters:
+```R
+#________________________Reading the files______________________#
+# creating list of samples
+samples1 <- list.files("/Users/andrew/Documents/Saindhabi/filtered/")
+
+# reading files into Seurat objects
+for (file in samples1){
+  print(paste0(file))
+  seurat_data <- Read10X(data.dir <- paste0("/Users/andrew/Documents/Saindhabi/filtered/",file))
+  seurat_obj <- CreateSeuratObject(counts = seurat_data, 
+                                   min.features = 100, 
+                                   project = file)
+  assign(file, seurat_obj)
+}
+
+
+# updated sample name 
+samples_blca <- samples1[-c(1,2,9)]
+
+# now merging all objects into one Seurat obj
+
+merged_seurat_new <- merge(x = SRR12603782,
+                           y = c(SRR12603783,
+                                 SRR12603784,
+                                 SRR12603785,
+                                 SRR12603786,
+                                 SRR12603787,
+                                 SRR12603789,
+                                 SRR12603790),
+                           add.cell.id = samples_blca)
+```
+```R
+#________________________Filteration____________________________#
+
+sampleData<- data.frame(tibble::tribble(
+  ~sample_id, ~gender, ~age, ~Grade, ~Invasiveness, ~Surgery_Type, ~Tumor_size_cm,
+  "SRR12603790",     "M",  67L,  "low", "Noninvasive",       "TURBT",          "1.9",
+  "SRR12603789",     "M",  70L,  "low", "Noninvasive",       "TURBT",          "2.5",
+  "SRR12603787",     "M",  63L, "high", "Noninvasive",  "Cystectomy",          "3.5",
+  "SRR12603786",     "F",  59L, "high", "Noninvasive",  "Cystectomy",          "4.7",
+  "SRR12603785",     "M",  57L, "high",    "Invasive",  "Cystectomy",          "5.1",
+  "SRR12603784",     "M",  75L, "high",    "Invasive",  "Cystectomy",          "4.3",
+  "SRR12603783",     "M",  77L, "high",    "Invasive",  "Cystectomy",          "4.5",
+  "SRR12603782",     "F",  72L, "high",    "Invasive",  "Cystectomy",          "4.1",
+  "SRR12603781",     "M",  67L, "normal",   "normal",       "TURBT",            "-",
+  "SRR12603788",     "M",  75L, "normal",   "normal",  "Cystectomy",            "-",
+  "SRR12603780",     "M",  63L, "normal",   "normal",  "Cystectomy",            "-"
+))
+
+
+# Creating .csv object to load at any time
+save(sampleData, file="sampleInfo.csv")
+
+# reading sampleInformation:
+sampleInformation <- read.csv("./sampleInfo.csv")
+
+# Compute percent mito ratio
+merged_seurat_new$mitoRatio <- PercentageFeatureSet(object = merged_seurat_new, pattern = "^MT-")
+merged_seurat_new$mitoRatio <- merged_seurat_new@meta.data$mitoRatio / 100
+
+# adding cell column
+merged_seurat_new$cells <- rownames(merged_seurat_new@meta.data)
+
+# merging with sample information
+merged_seurat_new_2 <- merge(merged_seurat_new@meta.data, sampleData, 
+                             by.x = "orig.ident", 
+                             by.y = "sample_id", 
+                             all.x = TRUE)
+
+merged_seurat_new@meta.data<-merged_seurat_new_2
+
+# re-setting the rownames
+rownames(merged_seurat_new@meta.data) <- merged_seurat_new@meta.data$cells
+
+# Filteration
+filtered_seurat_new <- subset(merged_seurat_new, 
+                       subset= nCount_RNA >= 1000 &
+                       nFeature_RNA <= 6000 & 
+                       mitoRatio < 0.10)
+```
+```R
+#________________________Integration using Harmony____________________________#
+#integration using harmony need several steps to be undertaken:
+
+# Performing log-normalization and feature selection, as well as SCT normalization on global object
+merged_seurat_new <- filtered_seurat_new %>%
+                     NormalizeData() %>%
+                     FindVariableFeatures(selection.method = "vst", nfeatures = 3000) %>% 
+                     ScaleData() %>%
+                     SCTransform(vars.to.regress = c("mitoRatio", "orig.ident"))
+```
+```R
+# Calculate PCs using variable features determined by SCTransform (3000 by default)
+merged_seurat_new <- RunPCA(merged_seurat_new, assay = "SCT", npcs = 50)
+```
+```
+#PC_ 1 
+#Positive:  IGFBP7, COL1A2, TAGLN, COL3A1, COL1A1, LUM, SPARC, DCN, MGP, CALD1, 
+#           ACTA2, BGN, MYL9, RARRES2, TIMP1, RGS5, THY1, LGALS1, COL6A2, MFAP4, 
+#           COL6A3, COL4A1, FN1, MT2A, MMP2, C1R, IFITM3, PPP1R14A, TPM2, VIM 
+#Negative:  CCL5, CD52, GNLY, HLA-DRA, NKG7, CD74, GZMA, TYROBP, CCL4, PTPRC, 
+#           SRGN, GZMB, HLA-DPB1, CD3D, RGS1, HLA-DRB1, HLA-DPA1, FCER1G, CD7, C1QA, 
+#           TRAC, HCST, C1QB, CD69, IFNG, HLA-DQA1, CORO1A, SAMSN1, C1QC, AIF1 
+
+#PC_ 2 
+#Positive:  IGHG1, IGLC2, CCL5, IGKC, JCHAIN, IGHG3, IGHG4, MZB1, LY6D, SPINK1, 
+#           CRH, IL32, PLVAP, PLA2G2A, TRAC, CD3D, LCN15, NKG7, GNLY, IGHGP, 
+#           MALAT1, IGFBP3, ADIRF, FABP4, GZMA, FLT1, COL4A1, CD7, INSR, TRBC1 
+#Negative:  HLA-DRA, CD74, TYROBP, C1QA, C1QB, C1QC, HLA-DPB1, HLA-DRB1, AIF1, HLA-DPA1, 
+#           HLA-DQA1, FCER1G, APOE, LYZ, HLA-DQB1, MS4A6A, IFI30, CD14, APOC1, FTL, 
+#           CCL3, FCGR3A, LST1, FCGR2A, MS4A7, FOLR2, CD68, MS4A4A, TMEM176B, HLA-DMB 
+
+# PC_ 3 
+# Positive:  LUM, DCN, COL1A2, COL3A1, COL1A1, RARRES2, TAGLN, CCL5, MFAP4, COL6A3, 
+#            MT2A, ACTA2, SERPINF1, C1R, TIMP1, C1S, VCAN, GPC6, FGF7, BGN, 
+#            MMP2, SFRP2, COL8A1, PTGDS, COL6A2, CRYAB, GNLY, TPM2, MYL9, CTSK 
+#Negative:  IGFBP7, PLVAP, FLT1, ACKR1, SPARCL1, MCTP1, VWF, SELE, INSR, AQP1, 
+#           CALCRL, LDB2, ZNF385D, HSPG2, CCL14, COL4A1, RAMP2, PCAT19, TCF4, CLDN5, 
+#           PECAM1, ADAMTS9, RAMP3, ESM1, SPARC, SERPINE1, ENG, COL4A2, STC1, GNG11 
+
+#PC_ 4 
+#Positive:  IGHG1, IGLC2, IGHG4, IGKC, IGHG3, JCHAIN, MZB1, LUM, S100A2, DCN, 
+#           PLA2G2A, IGHGP, PTGDS, IGLC3, CXCL1, LCN15, SPINK1, DERL3, IGHA1, MMP2, 
+#           CXCL8, MT2A, FABP4, MFAP4, RARRES2, KRT17, FGF7, CCL2, S100A9, SERPINE2 
+#Negative:  CCL5, RGS5, GNLY, ACTA2, IGFBP7, NKG7, TAGLN, GZMA, CD52, MYL9, 
+#           CRIP1, GZMB, PPP1R14A, CALD1, IL32, B2M, CCL4, NDUFA4L2, SPARC, CD3D, 
+#           IFNG, PTPRC, TRAC, MALAT1, CD7, THY1, TMSB4X, FRZB, COL4A1, VIM 
+
+#PC_ 5 
+#Positive:  LUM, DCN, PTGDS, CCL5, RARRES2, MMP2, MFAP4, MT2A, SERPINF1, FGF7 
+#           SFRP2, IL32, NKG7, COL8A1, C1S, GNLY, VCAN, C1R, GZMA, CD52 
+#           LSAMP, AGT, CTSK, CHI3L1, APOD, GZMB, SERPINE1, SERPINE2, FBLN1, A2M 
+#Negative:  RGS5, ACTA2, TAGLN, IGHG1, MYL9, NDUFA4L2, PPP1R14A, IGLC2, IGHG4, IGKC 
+#           JCHAIN, CALD1, IGHG3, MZB1, FRZB, IGFBP7, CCDC102B, THY1, COX4I2, MYH11 
+#           PRKG1, TPPP3, MUSTN1, TPM2, SOD3, HIGD1B, IGHGP, CDH6, WFDC1, IGLC3
+```
+```
+merged_seurat_new <- RunTSNE(merged_seurat_new, assay = "SCT", npcs = 50)
+```
+```
+# Integration
+install.packages("harmony")
+
+library(harmony)
+
+harmonized_seurat <- RunHarmony(merged_seurat_new, 
+                                group.by.vars = c("orig.ident", "gender", "Surgery_Type"), 
+                                reduction = "pca", assay.use = "SCT", reduction.save = "harmony")
+
+
+harmonized_seurat <- RunUMAP(harmonized_seurat, reduction = "harmony", assay = "SCT", dims = 1:40)
+
+#harmonized_seurat <- RunUTSNE(harmonized_seurat, reduction = "harmony", assay = "SCT", dims = 1:40)
+```
+```R
+#________________________Cluster identification and Inspect the effects of Harmony batch removel ____________#
+
+# to set reduction to harmony and finding the clusters
+harmonized_seurat <- FindNeighbors(object = harmonized_seurat, reduction = "harmony")
+harmonized_seurat <- FindClusters(harmonized_seurat, resolution = c(0.1, 0.2, 0.4, 0.6, 0.8))
+
+# visualization
+Idents(harmonized_seurat) <- harmonized_seurat@meta.data$SCT_snn_res.0.1
+
+# color cells based on the sample name
+# Plot UMAP 
+png(filename = "harmony_UMAP_y_sample.png", width = 16, height = 8.135, units = "in", res = 300)
+DimPlot(harmonized_seurat,
+        group.by = "orig.ident",
+        reduction = "umap")
+dev.off()
+```
+
+
+
+```R
+#________________________SuperCluster Identification____________#
+
+png(filename = "harmony_umap_cluster_with_label.png", width = 16, height = 8.135, units = "in", res = 300)
+DimPlot(harmonized_seurat,
+        reduction = "umap",
+        label = TRUE,
+        label.size = 6)
+dev.off()
+```
+```
+# lets visualize cells expressing supercluster markers:
+# CD31: PECAM1
+markers <- c("EPCAM", "PECAM1", "COL1A1", "PDGFRA", "RGS5", "CD79A", "LYZ", "CD3D", "TPSAB1")
+
+png(filename = "umap_superCluster_cells.png", width = 16, height = 8.135, units = "in", res = 300)
+FeaturePlot(object = harmonized_seurat,
+            features = markers,
+            order = TRUE,
+            min.cutoff = "q10",
+            reduction = "umap",
+            label = TRUE,
+            repel = TRUE)
+
+dev.off()
+
+
+#______________________________ All markers________________________________
+# Find markers for every cluster compared to all remaining cells, report only the positive ones
+markers <- FindAllMarkers(object = harmonized_seurat, 
+                          only.pos = TRUE,
+                          logfc.threshold = 0.25) 
+
+saveRDS(markers, "harmony_markers.RDS")
+
+# mutate the markers data frame
+# Extract top 10 markers per cluster
+
+top10_new <- markers %>%
+             mutate(delta_pct = (pct.1 - pct.2)) %>%
+             #filter(avg_log2FC > 1.5) %>%  # only keep rows where avg_log2FC > 1.5
+             group_by(cluster) %>%
+             top_n(n = 10, wt = delta_pct)
+
+data.table::fwrite(top10_new, "harmony_blca_top10_all_markers.csv")
+
+cluster_markers_10 <- top10_new %>% 
+                      group_by(cluster) %>% 
+                      summarize(genes = paste(gene, collapse = ","))
+
+data.table::fwrite(cluster_markers_10, "cluster_markers_10.csv")
+
+# feature plot for top markers
+plotList = list()
+
+for(cluster in 1:nrow(cluster_markers_10)){
+  mkr = unlist(strsplit(cluster_markers_10$genes[cluster], ","))
+  plotList[[cluster]] = FeaturePlot(object = harmonized_seurat,
+                                    features = mkr,
+                                    order = TRUE,
+                                    min.cutoff = "q10",
+                                    reduction = "umap",
+                                    label = TRUE,
+                                    repel = TRUE)
+}
+    
+
+# Iterate over all clusters
+
+png(filename = "harmony_blca_clsuter_markers_cluster0.png", width = 16, height = 8.135, units = "in", res = 300)
+plotList[[1]]
+dev.off()
+
+png(filename = "harmony_blca_clsuter_markers_cluster9.png", width = 16, height = 8.135, units = "in", res = 300)
+plotList[[10]]
+dev.off()
+
+png(filename = "harmony_blca_clsuter_markers_cluster9.png", width = 16, height = 8.135, units = "in", res = 300)
+plotList[[10]]
+dev.off()
+
+png(filename = "harmony_blca_clsuter_markers_cluster9.png", width = 16, height = 8.135, units = "in", res = 300)
+plotList[[10]]
+dev.off()
+
+png(filename = "harmony_blca_clsuter_markers_cluster9.png", width = 16, height = 8.135, units = "in", res = 300)
+plotList[[10]]
+dev.off()
+
+png(filename = "harmony_blca_clsuter_markers_cluster9.png", width = 16, height = 8.135, units = "in", res = 300)
+plotList[[10]]
+dev.off()
+#
+
+
+
+
+
