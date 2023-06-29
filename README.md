@@ -1338,6 +1338,16 @@ dev.off()
 
 
 # Ananlysis Considering Cell Super Clusters:
+
+This section is based on what is got from the paper focusing on cancer samples and using harmony to do integration. 
+
+"Cells with UMI numbers <1000 or with over 10% mitochondrial-derived UMI counts were considered low-quality cells and were removed. In order to eliminate potential doublets, single cells with over 6000 genes detected were also filtered out. Finally, 52721 single cells remained, and they were applied in downstream analyses."
+
+"Since sample from eight patients were processed and sequenced in batches, patient number was used to remove potential batch effect."
+
+"epithelial (EPCAM+) cells; endothelial (CD31+) cells; two types of fibroblasts (COL1A1+)—iCAFs (PDGFRA+) and myo-CAFs (mCAFs) (RGS5+); B cells (CD79A+); myeloid cells (LYZ+); T cells (CD3D+); and mast cells (TPSAB1+)"
+
+## Reading and Preparing Seurat Object
 ```R
 #________________________Reading the files______________________#
 # creating list of samples
@@ -1369,6 +1379,7 @@ merged_seurat_new <- merge(x = SRR12603782,
                                  SRR12603790),
                            add.cell.id = samples_blca)
 ```
+## Filtering: 
 ```R
 #________________________Filteration____________________________#
 
@@ -1418,6 +1429,13 @@ filtered_seurat_new <- subset(merged_seurat_new,
                        nFeature_RNA <= 6000 & 
                        mitoRatio < 0.10)
 ```
+## Integration:
+
+### Using Harmony:
+The 1st set of codes, here, incorporates an additional reduction of 50 "harmony components" (i.e., corrected principal components) to our Seurat object, which is stored in the ```harmonized_seurat@reductions$harmony``` variable.
+
+However, to ensure that the Harmony integration is accurately represented in the data visualization, we must generate a UMAP that is derived from these harmony embeddings instead of the PCs.
+
 ```R
 #________________________Integration using Harmony____________________________#
 #integration using harmony need several steps to be undertaken:
@@ -1480,7 +1498,6 @@ merged_seurat_new <- RunTSNE(merged_seurat_new, assay = "SCT", npcs = 50)
 ```
 # Integration
 install.packages("harmony")
-
 library(harmony)
 
 harmonized_seurat <- RunHarmony(merged_seurat_new, 
@@ -1492,6 +1509,7 @@ harmonized_seurat <- RunUMAP(harmonized_seurat, reduction = "harmony", assay = "
 
 #harmonized_seurat <- RunUTSNE(harmonized_seurat, reduction = "harmony", assay = "SCT", dims = 1:40)
 ```
+## Clustering and Visualization
 ```R
 #________________________Cluster identification and Inspect the effects of Harmony batch removel ____________#
 
@@ -1510,9 +1528,11 @@ DimPlot(harmonized_seurat,
         reduction = "umap")
 dev.off()
 ```
+![harmony_UMAP_y_sample](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/5aeee4a4-c5e1-4f67-8d20-fd3eb27fe39b)
 
+As the above figure suggests, Harmony did a great job in terms of removing the batch effects.
 
-
+## Super Cluster Identification:
 ```R
 #________________________SuperCluster Identification____________#
 
@@ -1523,6 +1543,9 @@ DimPlot(harmonized_seurat,
         label.size = 6)
 dev.off()
 ```
+![harmony_umap_cluster_with_label](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/76a41f7c-48db-44b8-9878-7715cdfb8eff)
+
+## Marker Visualization: 
 ```
 # lets visualize cells expressing supercluster markers:
 # CD31: PECAM1
@@ -1538,9 +1561,12 @@ FeaturePlot(object = harmonized_seurat,
             repel = TRUE)
 
 dev.off()
+```
+![umap_superCluster_cells](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/25fa6f51-2115-4e3c-ad0c-20f4e72c49bc)
 
-
-#______________________________ All markers________________________________
+## Marker Identification for the 9 Superclusters: 
+```
+#______________________________ All markers________________________________#
 # Find markers for every cluster compared to all remaining cells, report only the positive ones
 markers <- FindAllMarkers(object = harmonized_seurat, 
                           only.pos = TRUE,
@@ -1558,13 +1584,16 @@ top10_new <- markers %>%
              top_n(n = 10, wt = delta_pct)
 
 data.table::fwrite(top10_new, "harmony_blca_top10_all_markers.csv")
-
+```
+### Visualization of top markers in each cluster:
+```
 cluster_markers_10 <- top10_new %>% 
                       group_by(cluster) %>% 
                       summarize(genes = paste(gene, collapse = ","))
 
 data.table::fwrite(cluster_markers_10, "cluster_markers_10.csv")
-
+```
+```
 # feature plot for top markers
 plotList = list()
 
@@ -1578,22 +1607,32 @@ for(cluster in 1:nrow(cluster_markers_10)){
                                     label = TRUE,
                                     repel = TRUE)
 }
-    
-
-# Iterate over all clusters
-
+```
+### Iterate over all clusters
+## Cluster0:
+   
+```
 png(filename = "harmony_blca_clsuter_markers_cluster0.png", width = 16, height = 8.135, units = "in", res = 300)
 plotList[[1]]
 dev.off()
+```
+![harmony_blca_clsuter_markers_cluster0](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/865ad102-a05c-4072-9fa8-1e76ecd55094)
 
+## Cluster1:
+```
 png(filename = "harmony_blca_clsuter_markers_cluster1.png", width = 16, height = 8.135, units = "in", res = 300)
 plotList[[2]]
 dev.off()
+```
+![harmony_blca_clsuter_markers_cluster1](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/76e0dcee-b1e6-4a41-9950-7f5d9842f41d)
 
+## Cluster2: 
+```
 png(filename = "harmony_blca_clsuter_markers_cluster2.png", width = 16, height = 8.135, units = "in", res = 300)
 plotList[[3]]
 dev.off()
-
+```
+```
 png(filename = "harmony_blca_clsuter_markers_cluster3.png", width = 16, height = 8.135, units = "in", res = 300)
 plotList[[4]]
 dev.off()
