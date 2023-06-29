@@ -31,6 +31,8 @@ install.packages("cowplot")
 library("cowplot")
 install.packages("HGNChelper")
 library("HGNChelper")
+install.packages("harmony")
+library("harmony")
 
 install.packages("dplyr")
 library(dplyr)
@@ -1632,36 +1634,65 @@ png(filename = "harmony_blca_clsuter_markers_cluster2.png", width = 16, height =
 plotList[[3]]
 dev.off()
 ```
+![harmony_blca_clsuter_markers_cluster2](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/23700a62-4b07-43ce-91bd-b488961b8586)
+
+## Cluster3:
 ```
 png(filename = "harmony_blca_clsuter_markers_cluster3.png", width = 16, height = 8.135, units = "in", res = 300)
 plotList[[4]]
 dev.off()
+```
+![harmony_blca_clsuter_markers_cluster3](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/3f71beee-0659-4e14-a375-c7702a96dc48)
 
+## Cluster4:
+```
 png(filename = "harmony_blca_clsuter_markers_cluster4.png", width = 16, height = 8.135, units = "in", res = 300)
 plotList[[5]]
 dev.off()
+```
+![harmony_blca_clsuter_markers_cluster4](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/af8b47ae-c16a-4d48-b278-c5ce8f20fde6)
 
+## Cluster5:
+```
 png(filename = "harmony_blca_clsuter_markers_cluster5.png", width = 16, height = 8.135, units = "in", res = 300)
 plotList[[6]]
 dev.off()
+```
+![harmony_blca_clsuter_markers_cluster5](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/88202958-067c-4fa1-9849-02d424027a84)
 
+## Cluster6:
+```
 png(filename = "harmony_blca_clsuter_markers_cluster6.png", width = 16, height = 8.135, units = "in", res = 300)
 plotList[[7]]
 dev.off()
+```
+![harmony_blca_clsuter_markers_cluster6](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/c8ca9da5-d997-4567-8445-0053af2eac76)
 
+## Cluster7: 
+```
 png(filename = "harmony_blca_clsuter_markers_cluster7.png", width = 16, height = 8.135, units = "in", res = 300)
 plotList[[8]]
 dev.off()
+```
+![harmony_blca_clsuter_markers_cluster7](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/872bae3d-6351-4c2e-8442-98ea03207f94)
 
+## Cluster8:
+```
 png(filename = "harmony_blca_clsuter_markers_cluster8.png", width = 16, height = 8.135, units = "in", res = 300)
 plotList[[9]]
 dev.off()
+```
+![harmony_blca_clsuter_markers_cluster8](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/399ed8c1-1621-4eb3-b8d6-3ff2ee713bed)
 
+## Cluster9:
+```
 png(filename = "harmony_blca_clsuter_markers_cluster9.png", width = 16, height = 8.135, units = "in", res = 300)
 plotList[[10]]
 dev.off()
+```
+![harmony_blca_clsuter_markers_cluster9](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/6fe7646a-7455-4b88-9ddc-6c36fdcc0a3d)
 
-#
+
 
 
 
