@@ -1691,8 +1691,19 @@ plotList[[10]]
 dev.off()
 ```
 ![harmony_blca_clsuter_markers_cluster9](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/6fe7646a-7455-4b88-9ddc-6c36fdcc0a3d)
-
-
+```R
+# LYZ cells
+png(filename = "LYZ_harmony_blca_clsuter_marker.png", width = 16, height = 8.135, units = "in", res = 300)
+FeaturePlot(object = harmonized_seurat,
+            features = c("LYZ"),
+            order = TRUE,
+            min.cutoff = "q10",
+            reduction = "umap",
+            label = TRUE,
+            repel = TRUE)
+dev.off()
+```
+![LYZ_harmony_blca_clsuter_marker](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/04021da8-4d36-441e-ade4-6a08067812a4)
 
 
 
