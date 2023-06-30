@@ -1706,6 +1706,7 @@ dev.off()
 ```
 ![LYZ_harmony_blca_clsuter_marker_2](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/2dae099f-e9df-4708-930e-569baa5eb920)
 
+## Markers & Cell Types: 
 | Cluster id   | Genes | Cell-Type (PanglaoDB + ChatGPT) | 
 | ------------- | ------------- | ------------- |
 | 0 | DENND2C, KLF5, FAM160A1, CXADR, TNFRSF21, CLDN7, BAIAP2L1, SMIM22, SERINC2, RAB25 | Epithelial cells |
@@ -1735,7 +1736,7 @@ harmonized_seurat <- RenameIdents(object = harmonized_seurat,
                                   "8" = "myo - CAFs",
                                   "9" = "mast cells")
 ```
-## Visualization 
+## Visualization: 
 ```R
 png(filename = "harmont_blca_umap_with_label_2_2.png", width = 16, height = 8.135, units = "in", res = 600)
 DimPlot(object = harmonized_seurat, 
