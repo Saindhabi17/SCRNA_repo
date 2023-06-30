@@ -1710,7 +1710,7 @@ dev.off()
 | ------------- | ------------- | ------------- |
 | 0 | DENND2C, KLF5, FAM160A1, CXADR, TNFRSF21, CLDN7, BAIAP2L1, SMIM22, SERINC2, RAB25 | Epithelial cells |
 | 1 | IL32, CD3D, TRAC, PTPRC, CD52, CD2, TRBC2, ARHGAP15, SKAP1, CD3E | T-Cells |
-| 2 | SPINK1, UCA1, CD24, FCRLB, UPK2, SERINC2, TMEM97, SMIM22, FBLN1, GATA3 | 8888 |
+| 2 | SPINK1, UCA1, CD24, FCRLB, UPK2, SERINC2, TMEM97, SMIM22, FBLN1, GATA3 | Epithelial Cells (with Immuno Cells + Fibroblasts) |
 | 3 | PLVAP, SPARCL1, HSPG2, VWF, TCF4, LDB2, CALCRL, RAMP2, PCAT19, PECAM1 | Endothelial Cells |
 | 4 | CCL5, NKG7, GZMB, GZMA, CCL4, CD52, HCST, CD7, LINC01871, CST7 | Immune Cells |
 | 5 | HLA-DRA, HLA-DPB1, TYROBP, HLA-DQA1, HLA-DRB1, HLA-DPA1, HLA-DQB1, FCER1G, AIF1, IFI30 | APCs (Macrophages + B-Cells) |
@@ -1724,34 +1724,32 @@ dev.off()
 ```
 # Rename all identities
 harmonized_seurat <- RenameIdents(object = harmonized_seurat, 
-                                  "0" = "Epithelial Cells",
-                                  "1" = "T-cells", # impureity with epithelial cells
-                                  "2" = "Endothelial cells",
-                                  "3" = "APCs(Macrophages, B-cells)",
-                                  "4" = "B-cells",
-                                  "5" = "Immune Cells",
-                                  "6" = "myo-CAF",
-                                  "7" = "i-CAF",
-                                  "8" = "Mast cells",
-                                  "9" = "Epithelial cells+Mesenchymal cells")
+                                  "0" = "epithelial cells",
+                                  "1" = "T - cells", 
+                                  "2" = "epithelial cells, immune cells and fibroblasts", # impureity with epithelial cells
+                                  "3" = "endothelial cells",
+                                  "4" = "immune cells",
+                                  "5" = "APCs (macrophages + B-cells)",
+                                  "6" = "B - cells",
+                                  "7" = "i - CAFs",
+                                  "8" = "myo - CAFs",
+                                  "9" = "mast cells")
+```
+## Visualization 
+```R
+png(filename = "harmont_blca_umap_with_label_2_2.png", width = 16, height = 8.135, units = "in", res = 600)
+DimPlot(object = harmonized_seurat, 
+        reduction = "umap", 
+        label = TRUE,
+        label.size = 3,
+        repel = TRUE)
+dev.off()
+```
+![harmont_blca_umap_with_label_2_2](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/9a6605ef-49c8-4f96-a2eb-5391e758b6e8)
 
-harmonized_seurat <- RenameIdents(object = harmonized_seurat, 
-                                  "Epithelial Cells" = " ",
-                                  "T-cells" = "T - cells", # impureity with epithelial cells
-                                  "Endothelial cells" = " ",
-                                  "APCs(Macrophages, B-cells)" = "endothelial cells",
-                                  "B-cells" = "immune cells",
-                                  "Immune Cells" = "APCs (macrophages + B-cells)",
-                                  "myo-CAF" = "B - cells ",
-                                  "i-CAF" = "i - CAFs",
-                                  "Mast cells" = "myo - CAFs",
-                                  "Epithelial cells+Mesenchymal cells" = "mast cells")
-
-
-
-
-
-png(filename = "harmont_blca_umap_with_label_2.png", width = 16, height = 8.135, units = "in", res = 600)
+## Visualization of invasive and noninvasive: 
+```R
+png(filename = "harmont_blca_umap_with_label_21.png", width = 16, height = 8.135, units = "in", res = 600)
 DimPlot(object = harmonized_seurat, 
         reduction = "umap", 
         label = TRUE,
@@ -1759,16 +1757,7 @@ DimPlot(object = harmonized_seurat,
         repel = TRUE,
         split.by = "Invasiveness")
 dev.off()
-
-png(filename = "harmont_blca_umap_with_label_22.png", width = 16, height = 8.135, units = "in", res = 600)
-DimPlot(object = harmonized_seurat, 
-        reduction = "umap", 
-        label = TRUE,
-        label.size = 3,
-        repel = TRUE)
-dev.off()
-
 ```
-
+![harmont_blca_umap_with_label_21](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/46e4063d-0d2d-4cca-a4f0-aaa371c09446)
 
 
