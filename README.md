@@ -1706,22 +1706,22 @@ dev.off()
 ```
 ![LYZ_harmony_blca_clsuter_marker_2](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/2dae099f-e9df-4708-930e-569baa5eb920)
 
-| Cluster id   | Genes | cell_type (PanglaoDB + ChatGPT) | 
+| Cluster id   | Genes | Cell-Type (PanglaoDB + ChatGPT) | 
 | ------------- | ------------- | ------------- |
 | 0 | DENND2C, KLF5, FAM160A1, CXADR, TNFRSF21, CLDN7, BAIAP2L1, SMIM22, SERINC2, RAB25 | Epithelial cells |
 | 1 | IL32, CD3D, TRAC, PTPRC, CD52, CD2, TRBC2, ARHGAP15, SKAP1, CD3E | T-Cells |
 | 2 | SPINK1, UCA1, CD24, FCRLB, UPK2, SERINC2, TMEM97, SMIM22, FBLN1, GATA3 | 8888 |
-| 0 | DENND2C, KLF5, FAM160A1, CXADR, TNFRSF21, CLDN7, BAIAP2L1, SMIM22, SERINC2, RAB25 | Epithelial cells |
-| 0 | DENND2C, KLF5, FAM160A1, CXADR, TNFRSF21, CLDN7, BAIAP2L1, SMIM22, SERINC2, RAB25 | Epithelial cells |
-| 0 | DENND2C, KLF5, FAM160A1, CXADR, TNFRSF21, CLDN7, BAIAP2L1, SMIM22, SERINC2, RAB25 | Epithelial cells |
-| 0 | DENND2C, KLF5, FAM160A1, CXADR, TNFRSF21, CLDN7, BAIAP2L1, SMIM22, SERINC2, RAB25 | Epithelial cells |
-| 0 | DENND2C, KLF5, FAM160A1, CXADR, TNFRSF21, CLDN7, BAIAP2L1, SMIM22, SERINC2, RAB25 | Epithelial cells |
-| 0 | DENND2C, KLF5, FAM160A1, CXADR, TNFRSF21, CLDN7, BAIAP2L1, SMIM22, SERINC2, RAB25 | Epithelial cells |
-| 0 | DENND2C, KLF5, FAM160A1, CXADR, TNFRSF21, CLDN7, BAIAP2L1, SMIM22, SERINC2, RAB25 | Epithelial cells |
+| 3 | PLVAP, SPARCL1, HSPG2, VWF, TCF4, LDB2, CALCRL, RAMP2, PCAT19, PECAM1 | Endothelial Cells |
+| 4 | CCL5, NKG7, GZMB, GZMA, CCL4, CD52, HCST, CD7, LINC01871, CST7 | Immune Cells |
+| 5 | HLA-DRA, HLA-DPB1, TYROBP, HLA-DQA1, HLA-DRB1, HLA-DPA1, HLA-DQB1, FCER1G, AIF1, IFI30 | APCs (Macrophages + B-Cells) |
+| 6 | IGLC2, IGHG1, IGLC1, IGHG3, IGHA1, IGHG4, JCHAIN, IGHGP, MZB1, DERL3 | B-Cells |
+| 7 | LUM, DCN, COL1A2, COL3A1, RARRES2, MMP2, C1S, C1R, COL6A2, COL6A3 | i-CAFs |
+| 8 | RGS5, TAGLN, ACTA2, MYL9, CALD1, PPP1R14A, BGN, PRKG1, SOD3, COL6A2 | myo-CAFs |
+| 9 | TPSB2, TPSAB1, CPA3, HPGDS, LTC4S, MS4A2, SAMSN1, RGS13, FCER1G, TYROBP | Mast Cells |
 
+
+## Renaming Clusters:
 ```
-# renaming clusters
-
 # Rename all identities
 harmonized_seurat <- RenameIdents(object = harmonized_seurat, 
                                   "0" = "Epithelial Cells",
