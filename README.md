@@ -1530,7 +1530,7 @@ DimPlot(harmonized_seurat,
         reduction = "umap")
 dev.off()
 ```
-![harmony_UMAP_y_sample](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/5aeee4a4-c5e1-4f67-8d20-fd3eb27fe39b)
+![harmony_UMAP_y_sample2](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/ada707b0-e65d-448d-bbf5-b2e5cda1b0c2)
 
 As the above figure suggests, Harmony did a great job in terms of removing the batch effects.
 
@@ -1545,7 +1545,7 @@ DimPlot(harmonized_seurat,
         label.size = 6)
 dev.off()
 ```
-![harmony_umap_cluster_with_label](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/76a41f7c-48db-44b8-9878-7715cdfb8eff)
+![harmony_umap_cluster_with_label2](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/ac79b46c-7b73-45bb-96c7-b89a34858999)
 
 ## Marker Visualization: 
 ```
@@ -1564,7 +1564,7 @@ FeaturePlot(object = harmonized_seurat,
 
 dev.off()
 ```
-![umap_superCluster_cells](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/25fa6f51-2115-4e3c-ad0c-20f4e72c49bc)
+![umap_superCluster_cells2](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/5a5dfc3a-43c6-48d5-be13-53e3a64d6037)
 
 ## Marker Identification for the 9 Superclusters: 
 ```
@@ -1618,7 +1618,7 @@ png(filename = "harmony_blca_clsuter_markers_cluster0.png", width = 16, height =
 plotList[[1]]
 dev.off()
 ```
-![harmony_blca_clsuter_markers_cluster0](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/865ad102-a05c-4072-9fa8-1e76ecd55094)
+![harmony_blca_clsuter_markers_cluster0_2](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/0728eba4-5d3e-4153-839f-b291e70d17c1)
 
 ## Cluster1:
 ```
@@ -1626,7 +1626,7 @@ png(filename = "harmony_blca_clsuter_markers_cluster1.png", width = 16, height =
 plotList[[2]]
 dev.off()
 ```
-![harmony_blca_clsuter_markers_cluster1](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/76e0dcee-b1e6-4a41-9950-7f5d9842f41d)
+![harmony_blca_clsuter_markers_cluster1_2](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/bd50d8a4-ac28-4967-9c04-f6a084b75217)
 
 ## Cluster2: 
 ```
@@ -1634,7 +1634,7 @@ png(filename = "harmony_blca_clsuter_markers_cluster2.png", width = 16, height =
 plotList[[3]]
 dev.off()
 ```
-![harmony_blca_clsuter_markers_cluster2](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/23700a62-4b07-43ce-91bd-b488961b8586)
+![harmony_blca_clsuter_markers_cluster2_2](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/564b4236-abad-4a3f-abf3-877bd5d063e0)
 
 ## Cluster3:
 ```
@@ -1642,7 +1642,7 @@ png(filename = "harmony_blca_clsuter_markers_cluster3.png", width = 16, height =
 plotList[[4]]
 dev.off()
 ```
-![harmony_blca_clsuter_markers_cluster3](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/3f71beee-0659-4e14-a375-c7702a96dc48)
+![harmony_blca_clsuter_markers_cluster3_2](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/8b45b42c-8223-420a-94f6-b96de25d6d9e)
 
 ## Cluster4:
 ```
@@ -1650,7 +1650,7 @@ png(filename = "harmony_blca_clsuter_markers_cluster4.png", width = 16, height =
 plotList[[5]]
 dev.off()
 ```
-![harmony_blca_clsuter_markers_cluster4](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/af8b47ae-c16a-4d48-b278-c5ce8f20fde6)
+![harmony_blca_clsuter_markers_cluster4_2](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/86a1fd09-11b4-4d47-b013-29c084115237)
 
 ## Cluster5:
 ```
@@ -1658,7 +1658,7 @@ png(filename = "harmony_blca_clsuter_markers_cluster5.png", width = 16, height =
 plotList[[6]]
 dev.off()
 ```
-![harmony_blca_clsuter_markers_cluster5](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/88202958-067c-4fa1-9849-02d424027a84)
+![harmony_blca_clsuter_markers_cluster5_2](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/d7aba32d-6ed6-46d6-b8e8-abb1ea035eee)
 
 ## Cluster6:
 ```
@@ -1666,7 +1666,7 @@ png(filename = "harmony_blca_clsuter_markers_cluster6.png", width = 16, height =
 plotList[[7]]
 dev.off()
 ```
-![harmony_blca_clsuter_markers_cluster6](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/c8ca9da5-d997-4567-8445-0053af2eac76)
+![harmony_blca_clsuter_markers_cluster6_2](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/0880e2e1-335e-4183-8ba1-28b0ae512377)
 
 ## Cluster7: 
 ```
@@ -1674,7 +1674,7 @@ png(filename = "harmony_blca_clsuter_markers_cluster7.png", width = 16, height =
 plotList[[8]]
 dev.off()
 ```
-![harmony_blca_clsuter_markers_cluster7](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/872bae3d-6351-4c2e-8442-98ea03207f94)
+![harmony_blca_clsuter_markers_cluster7_2](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/1634609b-e7e9-4a9e-bda8-7ec71fdb43f7)
 
 ## Cluster8:
 ```
@@ -1682,7 +1682,7 @@ png(filename = "harmony_blca_clsuter_markers_cluster8.png", width = 16, height =
 plotList[[9]]
 dev.off()
 ```
-![harmony_blca_clsuter_markers_cluster8](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/399ed8c1-1621-4eb3-b8d6-3ff2ee713bed)
+![harmony_blca_clsuter_markers_cluster8_2](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/c81b11c0-7fa2-494c-aa37-7982fa21da0b)
 
 ## Cluster9:
 ```
@@ -1690,7 +1690,8 @@ png(filename = "harmony_blca_clsuter_markers_cluster9.png", width = 16, height =
 plotList[[10]]
 dev.off()
 ```
-![harmony_blca_clsuter_markers_cluster9](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/6fe7646a-7455-4b88-9ddc-6c36fdcc0a3d)
+![harmony_blca_clsuter_markers_cluster9_2](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/8631b716-3f85-4e9e-a6c1-ecfa19bde6d8)
+
 ```R
 # LYZ cells
 png(filename = "LYZ_harmony_blca_clsuter_marker.png", width = 16, height = 8.135, units = "in", res = 300)
@@ -1703,14 +1704,27 @@ FeaturePlot(object = harmonized_seurat,
             repel = TRUE)
 dev.off()
 ```
-![LYZ_harmony_blca_clsuter_marker](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/04021da8-4d36-441e-ade4-6a08067812a4)
+![LYZ_harmony_blca_clsuter_marker_2](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/2dae099f-e9df-4708-930e-569baa5eb920)
+
+| Cluster id   | Genes | cell_type (PanglaoDB + ChatGPT) | 
+| ------------- | ------------- | ------------- |
+| 0 | DENND2C, KLF5, FAM160A1, CXADR, TNFRSF21, CLDN7, BAIAP2L1, SMIM22, SERINC2, RAB25 | Epithelial cells |
+| 1 | IL32, CD3D, TRAC, PTPRC, CD52, CD2, TRBC2, ARHGAP15, SKAP1, CD3E | T-Cells |
+| 2 | SPINK1, UCA1, CD24, FCRLB, UPK2, SERINC2, TMEM97, SMIM22, FBLN1, GATA3 | 8888 |
+| 0 | DENND2C, KLF5, FAM160A1, CXADR, TNFRSF21, CLDN7, BAIAP2L1, SMIM22, SERINC2, RAB25 | Epithelial cells |
+| 0 | DENND2C, KLF5, FAM160A1, CXADR, TNFRSF21, CLDN7, BAIAP2L1, SMIM22, SERINC2, RAB25 | Epithelial cells |
+| 0 | DENND2C, KLF5, FAM160A1, CXADR, TNFRSF21, CLDN7, BAIAP2L1, SMIM22, SERINC2, RAB25 | Epithelial cells |
+| 0 | DENND2C, KLF5, FAM160A1, CXADR, TNFRSF21, CLDN7, BAIAP2L1, SMIM22, SERINC2, RAB25 | Epithelial cells |
+| 0 | DENND2C, KLF5, FAM160A1, CXADR, TNFRSF21, CLDN7, BAIAP2L1, SMIM22, SERINC2, RAB25 | Epithelial cells |
+| 0 | DENND2C, KLF5, FAM160A1, CXADR, TNFRSF21, CLDN7, BAIAP2L1, SMIM22, SERINC2, RAB25 | Epithelial cells |
+| 0 | DENND2C, KLF5, FAM160A1, CXADR, TNFRSF21, CLDN7, BAIAP2L1, SMIM22, SERINC2, RAB25 | Epithelial cells |
 
 ```
 # renaming clusters
 
 # Rename all identities
 harmonized_seurat <- RenameIdents(object = harmonized_seurat, 
-                                  "0" = "Epithelial cells",
+                                  "0" = "Epithelial Cells",
                                   "1" = "T-cells", # impureity with epithelial cells
                                   "2" = "Endothelial cells",
                                   "3" = "APCs(Macrophages, B-cells)",
@@ -1720,6 +1734,21 @@ harmonized_seurat <- RenameIdents(object = harmonized_seurat,
                                   "7" = "i-CAF",
                                   "8" = "Mast cells",
                                   "9" = "Epithelial cells+Mesenchymal cells")
+
+harmonized_seurat <- RenameIdents(object = harmonized_seurat, 
+                                  "Epithelial Cells" = " ",
+                                  "T-cells" = "T - cells", # impureity with epithelial cells
+                                  "Endothelial cells" = " ",
+                                  "APCs(Macrophages, B-cells)" = "endothelial cells",
+                                  "B-cells" = "immune cells",
+                                  "Immune Cells" = "APCs (macrophages + B-cells)",
+                                  "myo-CAF" = "B - cells ",
+                                  "i-CAF" = "i - CAFs",
+                                  "Mast cells" = "myo - CAFs",
+                                  "Epithelial cells+Mesenchymal cells" = "mast cells")
+
+
+
 
 
 png(filename = "harmont_blca_umap_with_label_2.png", width = 16, height = 8.135, units = "in", res = 600)
