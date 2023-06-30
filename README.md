@@ -1705,7 +1705,41 @@ dev.off()
 ```
 ![LYZ_harmony_blca_clsuter_marker](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/04021da8-4d36-441e-ade4-6a08067812a4)
 
+```
+# renaming clusters
 
+# Rename all identities
+harmonized_seurat <- RenameIdents(object = harmonized_seurat, 
+                                  "0" = "Epithelial cells",
+                                  "1" = "T-cells", # impureity with epithelial cells
+                                  "2" = "Endothelial cells",
+                                  "3" = "APCs(Macrophages, B-cells)",
+                                  "4" = "B-cells",
+                                  "5" = "Immune Cells",
+                                  "6" = "myo-CAF",
+                                  "7" = "i-CAF",
+                                  "8" = "Mast cells",
+                                  "9" = "Epithelial cells+Mesenchymal cells")
+
+
+png(filename = "harmont_blca_umap_with_label_2.png", width = 16, height = 8.135, units = "in", res = 600)
+DimPlot(object = harmonized_seurat, 
+        reduction = "umap", 
+        label = TRUE,
+        label.size = 3,
+        repel = TRUE,
+        split.by = "Invasiveness")
+dev.off()
+
+png(filename = "harmont_blca_umap_with_label_22.png", width = 16, height = 8.135, units = "in", res = 600)
+DimPlot(object = harmonized_seurat, 
+        reduction = "umap", 
+        label = TRUE,
+        label.size = 3,
+        repel = TRUE)
+dev.off()
+
+```
 
 
 
