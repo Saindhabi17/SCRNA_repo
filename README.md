@@ -1761,4 +1761,156 @@ dev.off()
 ```
 ![harmont_blca_umap_with_label_21](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/46e4063d-0d2d-4cca-a4f0-aaa371c09446)
 
+## Visualizing the Epithelial Cell Cluster: 
+```R
+# Obtaining clsuters with epithelial cells
+# To see the number of cells in each clsuter
+table(Idents(harmonized_seurat))
+```
+```R
+# epithelial cells  17143 
+# T - cells  14232 
+# epithelial cells, immune cells and fibroblasts  7313 
+# endothelial cells 6748
+# immune cells 5521 
+# APCs (macrophages + B-cells) 5150 
+# B - cells  4330 
+# i - CAFs 3051 
+# myo - CAFs 2813 
+# mast cells 1129 
+```
+```
+epi_cell_ids <- rownames(harmonized_seurat@meta.data)[harmonized_seurat@meta.data$SCT_snn_res.0.1 == '0']
+epi_cell_ids <- c(epi_cell_ids,rownames(harmonized_seurat@meta.data)[harmonized_seurat@meta.data$SCT_snn_res.0.1 == '2'])
+
+epi_seurat <- subset(filtered_seurat_new, subset = cells %in% epi_cell_ids)
+
+# Performing log-normalization and feature selection, as well as SCT normalization on global object
+epi_seurat <- epi_seurat %>%
+  NormalizeData() %>%
+  FindVariableFeatures(selection.method = "vst", nfeatures = 3000) %>% 
+  ScaleData() %>%
+  SCTransform(vars.to.regress = c("mitoRatio", "orig.ident"))
+
+# Calculate PCs using variable features determined by SCTransform (3000 by default)
+epi_seurat <- RunPCA(epi_seurat, assay = "SCT", npcs = 50)
+```
+```
+# PC_ 1 
+# Positive:  KRT17, MALAT1, CXCL8, CCN1, S100A2, FOS, KRT5, EDN1, NRG1, JUN 
+#            NFKBIA, CRYAB, HSPA1A, LAMC2, ATF3, PPP1R15A, BCAM, CXCL2, IER2, DUSP2 
+#            KRT15, ZFP36, ZFAND2A, IER3, SOD2, HSPA1B, JUNB, FOSB, MMP1, NR4A1 
+# Negative:  S100A9, CSTB, UCA1, C15orf48, FCRLB, S100A4, SPRR3, LY6D, SPINK1, CD24 
+#            FTH1, CLIC3, HILPDA, PSCA, IRS2, ADIRF, CRH, UPK2, SLC1A6, TAC3 
+#            UPK1A, HOPX, SNCG, RNASE1, MYEOV, GAPDH, RARRES1, GDF15, MMP7, UPK1B 
+# PC_ 2 
+# Positive:  CCT2, CCND1, S100A9, RAB3IP, FRS2, MYO16, YEATS4, FCHSD2, C15orf48, MMP7 
+#            CNOT2, MYEOV, IFI27, LTO1, HSPA6, AC025159.1, SLC35E3, SPINK1, SLPI, CPSF6 
+#            HSPA1A, ZFAND2A, AC025263.1, TFF1, VAMP5, LCN2, HOPX, ISG15, CD24, HSPB1 
+# Negative:  HILPDA, FTH1, LGALS1, CRH, GAPDH, FABP4, LY6D, UCA1, PLA2G2A, NDRG1 
+#            SLC2A1, FABP5, LCN15, ERO1A, LDHA, MSMB, CA9, CRTAC1, AL163541.1, LINC01088 
+#            RPS6, NDUFA4L2, ROBO2, BNIP3, CST1, CITED2, BNIP3L, S100A2, S100A4, FAM162A 
+# PC_ 3 
+# Positive:  S100A9, HILPDA, UCA1, CSTB, LGALS1, IRS2, FTH1, KRT5, PLAUR, C15orf48 
+#            NDRG1, NUPR1, GDF15, MALAT1, FCRLB, RARRES1, SPRR3, SLPI, WFDC2, LCN15 
+#            BPGM, LINC01088, SLC2A1, ROBO2, ICAM1, AL163541.1, IFI6, B2M, ADM, MT2A 
+# Negative:  LY6D, CRH, SPINK1, MSMB, H19, CCT2, PSCA, HSPA6, SNX31, YEATS4 
+#            ZFAND2A, DHRS2, RPS18, PHGR1, TUBA1B, RPL41, GCLC, COX6C, FCHSD2, LTO1 
+#            PCLAF, HPGD, RPS3, RPLP1, PSORS1C2, RPS14, FAM78B, AC019117.2, HSPB1, UPK2 
+# PC_ 4 
+# Positive:  SPINK1, S100A4, CD74, SLPI, IFI27, KRT13, WFDC2, UPK1A, MUC4, OLFM4 
+#            CXCL17, PLAUR, EMP1, HLA-DRA, S100A9, PIGR, LCN2, ADIRF, PHGR1, PSORS1C2 
+#            HLA-DRB1, PLAT, SNTG1, B2M, ABCA6, RARRES1, PVALB, LYPD3, CLDN4, AREG 
+# Negative:  CCT2, PLA2G2A, FABP4, LCN15, FRS2, YEATS4, RAB3IP, CNOT2, LINC01088, CRTAC1 
+#            IRS2, ROBO2, CCND1, SLC35E3, FCHSD2, MYO16, CST1, REG4, AC025159.1, FABP5 
+#            CPSF6, CXCL10, PLAC8, SERPINE2, LTO1, CA9, MDM2, AL162497.1, CRCT1, CLU 
+# PC_ 5 
+# Positive:  IRS2, MALAT1, HILPDA, MDM2, AL163541.1, UCA1, FRS2, RAB3IP, CNOT2, AL162497.1 
+#            NRG1, CPSF6, FTH1, AC025159.1, YEATS4, SLC35E3, SPRR3, CRH, NDUFA4L2, CCT2 
+#            FCRLB, NDRG1, S100A4, SPINK1, FCHSD2, SLC2A1, MMP1, MYO16, G0S2, CSTB 
+# Negative:  PLA2G2A, FABP4, LCN15, CRTAC1, IFI27, CST1, REG4, LINC01088, KRT13, ROBO2 
+#            CXCL10, SLPI, FABP5, S100A6, PLAC8, ZFAND2A, CRCT1, SPINK5, HSPB1, CTSE 
+#            TSPAN1, CLU, ADIRF, CD74, S100A13, OLFM4, S100P, WFDC2, SERPINE2, CA9 
+```
+```R
+epi_seurat <- RunTSNE(epi_seurat, assay = "SCT", npcs = 50)
+
+# Integration
+#install.packages("harmony")
+library(harmony)
+
+epi_seurat <- RunHarmony(epi_seurat, 
+                         group.by.vars = c("orig.ident", "gender", "Surgery_Type"), 
+                         reduction = "pca", assay.use = "SCT", reduction.save = "harmony")
+
+epi_seurat <- RunUMAP(epi_seurat, reduction = "harmony", assay = "SCT", dims = 1:40)
+
+#harmonized_seurat <- RunUTSNE(harmonized_seurat, reduction = "harmony", assay = "SCT", dims = 1:40)
+
+# Cluster identification and Inspect the effects of Harmony batch removal
+# to set reduction to harmony and finding the clusters
+epi_seurat <- FindNeighbors(object = epi_seurat, reduction = "harmony")
+epi_seurat <- FindClusters(epi_seurat, resolution = c(0.1, 0.2, 0.4, 0.6, 0.8))
+
+# visualization
+Idents(epi_seurat) <- epi_seurat@meta.data$SCT_snn_res.0.1
+
+# color cells based on the sample name
+# Plot UMAP 
+png(filename = "epi_harmony_UMAP_y_sample.png", width = 16, height = 8.135, units = "in", res = 300)
+DimPlot(epi_seurat,
+        group.by = "orig.ident",
+        reduction = "umap")
+dev.off()
+```
+![epi_harmony_UMAP_y_sample](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/a3accd7d-5ad1-4144-9b79-3d463ba3da43)
+
+```R
+# color cells based on the cluster
+# Plot UMAP 
+png(filename = "cluster_epi_harmony_UMAP.png", width = 16, height = 8.135, units = "in", res = 300)
+DimPlot(epi_seurat,
+        reduction = "umap",
+        label = TRUE,
+        label.size = 6)
+dev.off()
+```
+![cluster_epi_harmony_UMAP](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/5e276707-88f5-430e-a05c-45e7386be05d)
+
+```
+# Marker identification
+
+epi_markers <- FindAllMarkers(object = epi_seurat, 
+                              only.pos = TRUE,
+                              logfc.threshold = 0.25) 
+
+# mutate the markers dataframe
+# Extract top 10 markers per cluster
+
+epi_top10 <- epi_markers %>%
+  mutate(delta_pct = (pct.1 - pct.2)) %>%
+  #filter(avg_log2FC > 1.5) %>%  # only keep rows where avg_log2FC > 1.5
+  group_by(cluster) %>%
+  top_n(n = 10, wt = delta_pct)
+
+
+epi_cluster_markers_10 <- epi_top10 %>% 
+  group_by(cluster) %>% 
+  summarize(genes = paste(gene, collapse = ","))
+```
+## Markers & Cell Types: 
+|  Cluster id   | Genes |  Cell-Type (PanglaoDB + ChatGPT) |  
+| ------------- | ------------- | ------------- |
+| 0  | BCAM,IER3,FOSL1,CDH13,IGFBP7,LAMB3,CCN1,SOCS3,PLAUR,SERPINB5 | Cell-Type (PanglaoDB + ChatGPT) | 
+| 1  | LCN15,PLA2G2A,FABP4,UCA1,CA9,LGALS1,BNIP3,PTPRR,PNCK,FCRLB | Cell-Type (PanglaoDB + ChatGPT) | 
+| 2  | MYEOV,SLPI,CXCL17,IFI27,CRABP2,ASS1,RHOV,FA2H,MUC20,ANGPTL4 | Cell-Type (PanglaoDB + ChatGPT) | 
+| 3  | LY6D,TNNT3,BOK-AS1,H19,LINC01980,MYCL,PLBD1,DLGAP1,GMNN,IGF2BP2 | Cell-Type (PanglaoDB + ChatGPT) | 
+| 4  | UPK2,NDUFA4L2,SNX31,CRH,UPK1B,AC019117.2,TMEM97,UPK1A,KRT20,C4orf48,TESC | Cell-Type (PanglaoDB + ChatGPT) | 
+| 5  | MUC4,CPA6,TMCC3,OLFM4,PLAT,TM4SF1,SGPP2,SGMS2,HBEGF,DSP | Cell-Type (PanglaoDB + ChatGPT) | 
+| 6  | SPARC,IGHGP,CXCL10,REG4,IGLC1,CST1,LINC01088,LCN15,PLA2G2A,IGHA1 | Cell-Type (PanglaoDB + ChatGPT) | 
+
+
+
+
+
 
