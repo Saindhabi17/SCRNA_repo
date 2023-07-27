@@ -62,8 +62,8 @@ They are listed below.
 
 ```R
 # Directory
-filepath_homecomp = "/Users/HP/Downloads/filtered"
-filepath_workstation = "/Users/andrew/Downloads/filtered"
+filepath_homecomp = "/Users/HP/Downloads/filtered/"
+filepath_workstation = "/Users/andrew/Downloads/filtered/"
 ```
 I have started working with the filtered files that were prepared before using [Cell Ranger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger) from the FASTQ sequencing data generated from ScRNAseq. 
 
