@@ -1901,10 +1901,10 @@ epi_cluster_markers_10 <- epi_top10 %>%
 ## Markers & Cell Types: 
 |  Cluster id   | Genes |  Cell-Type (PanglaoDB + ChatGPT) |  
 | ------------- | ------------- | ------------- |
-| 0  | BCAM,IER3,FOSL1,CDH13,IGFBP7,LAMB3,CCN1,SOCS3,PLAUR,SERPINB5 | Cell-Type (PanglaoDB + ChatGPT) | 
-| 1  | LCN15,PLA2G2A,FABP4,UCA1,CA9,LGALS1,BNIP3,PTPRR,PNCK,FCRLB | Cell-Type (PanglaoDB + ChatGPT) | 
-| 2  | MYEOV,SLPI,CXCL17,IFI27,CRABP2,ASS1,RHOV,FA2H,MUC20,ANGPTL4 | Cell-Type (PanglaoDB + ChatGPT) | 
-| 3  | LY6D,TNNT3,BOK-AS1,H19,LINC01980,MYCL,PLBD1,DLGAP1,GMNN,IGF2BP2 | Cell-Type (PanglaoDB + ChatGPT) | 
+| 0  | BCAM,IER3,FOSL1,CDH13,IGFBP7,LAMB3,CCN1,SOCS3,PLAUR,SERPINB5 | Basal Cells | 
+| 1  | LCN15,PLA2G2A,FABP4,UCA1,CA9,LGALS1,BNIP3,PTPRR,PNCK,FCRLB | Cancer-associated Luminal Cells | 
+| 2  | MYEOV,SLPI,CXCL17,IFI27,CRABP2,ASS1,RHOV,FA2H,MUC20,ANGPTL4 | Cellular Growth Signalling-associated Luminal Cells | 
+| 3  | LY6D,TNNT3,BOK-AS1,H19,LINC01980,MYCL,PLBD1,DLGAP1,GMNN,IGF2BP2 | Unique Luminal Cells | 
 | 4  | UPK2,NDUFA4L2,SNX31,CRH,UPK1B,AC019117.2,TMEM97,UPK1A,KRT20,C4orf48,TESC | Cell-Type (PanglaoDB + ChatGPT) | 
 | 5  | MUC4,CPA6,TMCC3,OLFM4,PLAT,TM4SF1,SGPP2,SGMS2,HBEGF,DSP | Cell-Type (PanglaoDB + ChatGPT) | 
 | 6  | SPARC,IGHGP,CXCL10,REG4,IGLC1,CST1,LINC01088,LCN15,PLA2G2A,IGHA1 | Cell-Type (PanglaoDB + ChatGPT) | 
