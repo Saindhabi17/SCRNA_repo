@@ -1909,6 +1909,30 @@ epi_cluster_markers_10 <- epi_top10 %>%
 | 5  | MUC4,CPA6,TMCC3,OLFM4,PLAT,TM4SF1,SGPP2,SGMS2,HBEGF,DSP | Adhesion and Other Signalling Luminal Cells  | 
 | 6  | SPARC,IGHGP,CXCL10,REG4,IGLC1,CST1,LINC01088,LCN15,PLA2G2A,IGHA1 | Immuno Modulatory Luminal Cells | 
 
+```R
+# Reading seurat object
+epi_seurat <- readRDS("epi_seurat.RDS")
+
+# Rename all identities
+epi_seurat <- RenameIdents(object = epi_seurat, 
+                           "0" = "basal_cell",
+                           "1" = "cancer_associated_luminal_cell",
+                           "2" = "cellular_growth_signalling_associated_luminal_cell",
+                           "3" = "unique_luminal_cell",
+                           "4" = "luminal_differentiated_cell",
+                           "5" = "adhesion_signaling_luminal_cell",
+                           "6" = "immunomodulatory_luminal_cell")
+
+# Plot the UMAP with new labels
+png(filename = "labelled_epi.png", width = 16, height = 8.135, units = "in", res = 600)
+DimPlot(object = epi_seurat, 
+        reduction = "umap", 
+        label = TRUE,
+        label.size = 3,
+        repel = TRUE)
+dev.off()
+```
+![labelled_epi](https://github.com/Saindhabi17/SCRNA_repo/assets/133680893/32490601-78ba-4469-ab63-3f57bfd4516b)
 
 
 
